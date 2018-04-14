@@ -118,18 +118,47 @@ Define a big ol' bunch of handy utility functions.
     (add-to-list 'exec-path path))
 #+END_SRC
 
-* Configure helm
+* Configure navigation
+** Configure =neotree=
 
-I like the helm completion features. Use =M-x= for =helm-M-x=
+I prefer =neotree= for navigation.
+- Use =C-c p t= to toggle =neotree=
+- Show hidden files
+- Auto refresh =neotree=
 
 #+BEGIN_SRC emacs-lisp
-	(global-set-key (kbd "M-x") 'helm-M-x)
-	(global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
-	(global-set-key (kbd "C-x C-f") #'helm-find-files)
+  (require 'neotree)
+  (global-set-key (kbd "C-c f t") 'neotree-toggle)
+  (setq-default neo-show-hidden-files t)
+  (setq neo-theme (if (display-graphic-p) 'nerd))
+  (setq neo-autorefresh t)
+  (setq neo-smart-open t)
+  (setq neo-force-change-root t)
+  (setq neo-vc-integration '(face))
+#+END_SRC
+
+** Configure =helm=
+
+I like =helm= fuzzy search and completion
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+  (global-set-key (kbd "C-x C-f") #'helm-find-files)
   (helm-mode 1)
 #+END_SRC
 
-* UI preferences** Tweak window chrome
+** Fix helm + neotree issue
+
+Following fixes the =neotree= /Cannot make side window the only window/ issue
+
+#+BEGIN_SRC emacs-lisp
+  (shackle-mode)
+  (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.4)))
+#+END_SRC
+
+* UI preferences
+** Tweak window chrome
 
 I don't usually use the menu or scroll bar, and they take up useful space.
 
@@ -165,6 +194,12 @@ the bell altogether.
   (setq ring-bell-function 'ignore)
 #+END_SRC
 
+** Start maximized
+Start maximized.
+
+#+BEGIN_SRC emacs-lisp
+  (toggle-frame-maximized)
+#+END_SRC
 
 ** Highlight the current line
 
@@ -190,6 +225,12 @@ programming.
 #+END_SRC
 
 * Programming customizations
+
+I always use spaces instead of tabs.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
 
 I like shallow indentation, but tabs are displayed as 8 characters by default.
 This reduces that.
@@ -265,6 +306,15 @@ I'd like to start in the insert state when writing a commit message.
 
 ** Projectile
 
+Enable =helm-projectile=
+
+#+BEGIN_SRC emacs-lisp
+  (projectile-global-mode)
+  (setq projectile-keymap-prefix (kbd "C-c p"))
+  (require 'helm-projectile)
+  (helm-projectile-on)
+#+END_SRC
+
 # Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky enough
 # that I rarely use it (and forget it when I need it). This binds the
 # easier-to-type =C-c C-v= and =C-c v= to useful searches.
@@ -279,13 +329,13 @@ I'd like to start in the insert state when writing a commit message.
 #   (global-set-key (kbd "C-c C-v") 'sm/search-project-for-symbol-at-point)
 # #+END_SRC
 
-# When I visit a project with =projectile-switch-project=, the default action is
-# to search for a file in that project. I'd rather just open up the top-level
-# directory of the project in =dired= and find (or create) new files from there.
+When I visit a project with =projectile-switch-project=, the default action is
+to search for a file in that project. I'd rather just open up the top-level
+directory of the project in =neotree= and find (or create) new files from there.
 
-# #+BEGIN_SRC emacs-lisp
-#   (setq projectile-switch-project-action 'projectile-dired)
-# #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq projectile-switch-project-action 'neotree-projectile-action)
+#+END_SRC
 
 # I'd like to /always/ be able to recursively fuzzy-search for files, not just
 # when I'm in a Projecile-defined project. This uses the current directory as a
@@ -294,7 +344,6 @@ I'd like to start in the insert state when writing a commit message.
 # #+BEGIN_SRC emacs-lisp
 #   (setq projectile-require-project-root nil)
 # #+END_SRC
-
 
 ** =sh=
 
@@ -319,12 +368,12 @@ I like to see an outline of pretty bullets instead of a list of asterisks.
     (add-hook 'org-mode-hook #'org-bullets-mode))
 #+END_SRC
 
-I like seeing a little downward-pointing arrow instead of the usual ellipsis
-(=...=) that org displays when there's stuff under a header.
+# I like seeing a little downward-pointing arrow instead of the usual ellipsis
+# (=...=) that org displays when there's stuff under a header.
 
-#+BEGIN_SRC emacs-lisp
-  (setq org-ellipsis "⤵")
-#+END_SRC
+# #+BEGIN_SRC emacs-lisp
+#   (setq org-ellipsis "⤵")
+# #+END_SRC
 
 Use syntax highlighting in source blocks while editing.
 
@@ -426,33 +475,33 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 - Convert emails into todos to maintain an empty inbox.
 
 #+BEGIN_SRC emacs-lisp
-	;; (setq org-capture-templates
-	;;       '(("b" "Blog idea"
-	;;          entry
-	;;          (file (org-file-path "blog-ideas.org"))
-	;;          "* %?\n")
+  ;; (setq org-capture-templates
+  ;;       '(("b" "Blog idea"
+  ;;          entry
+  ;;          (file (org-file-path "blog-ideas.org"))
+  ;;          "* %?\n")
 
-	;;         ("e" "Email" entry
-	;;          (file+headline org-index-file "Inbox")
-	;;          "* TODO %?\n\n%a\n\n")
+  ;;         ("e" "Email" entry
+  ;;          (file+headline org-index-file "Inbox")
+  ;;          "* TODO %?\n\n%a\n\n")
 
-	;;         ("f" "Finished book"
-	;;          table-line (file "~/documents/notes/books-read.org")
-	;;          "| %^{Title} | %^{Author} | %u |")
+  ;;         ("f" "Finished book"
+  ;;          table-line (file "~/documents/notes/books-read.org")
+  ;;          "| %^{Title} | %^{Author} | %u |")
 
-	;;         ("r" "Reading"
-	;;          checkitem
-	;;          (file (org-file-path "to-read.org")))
+  ;;         ("r" "Reading"
+  ;;          checkitem
+  ;;          (file (org-file-path "to-read.org")))
 
-	;;         ("s" "Subscribe to an RSS feed"
-	;;          plain
-	;;          (file "~/documents/rss/urls")
-	;;          "%^{Feed URL} \"~%^{Feed name}\"")
+  ;;         ("s" "Subscribe to an RSS feed"
+  ;;          plain
+  ;;          (file "~/documents/rss/urls")
+  ;;          "%^{Feed URL} \"~%^{Feed name}\"")
 
-	;;         ("t" "Todo"
-	;;          entry
-	;;          (file+headline org-index-file "Inbox")
-	;;          "* TODO %?\n")))
+  ;;         ("t" "Todo"
+  ;;          entry
+  ;;          (file+headline org-index-file "Inbox")
+  ;;          "* TODO %?\n")))
 #+END_SRC
 
 When I'm starting an Org capture template I'd like to begin in insert mode. I'm
@@ -474,37 +523,37 @@ When refiling an item, I'd like to use ido for completion.
 Bind a few handy keys.
 
 #+BEGIN_SRC emacs-lisp
-	;; (define-key global-map "\C-cl" 'org-store-link)
-	;; (define-key global-map "\C-ca" 'org-agenda)
-	;; (define-key global-map "\C-cc" 'org-capture)
+  ;; (define-key global-map "\C-cl" 'org-store-link)
+  ;; (define-key global-map "\C-ca" 'org-agenda)
+  ;; (define-key global-map "\C-cc" 'org-capture)
 #+END_SRC
 
 Hit =C-c i= to quickly open up my todo list.
 
 #+BEGIN_SRC emacs-lisp
-	;; (defun sm/open-index-file ()
-	;;   "Open the master org TODO list."
-	;;   (interactive)
-	;;   (sm/copy-tasks-from-inbox)
-	;;   (find-file org-index-file)
-	;;   (flycheck-mode -1)
-	;;   (end-of-buffer))
+  ;; (defun sm/open-index-file ()
+  ;;   "Open the master org TODO list."
+  ;;   (interactive)
+  ;;   (sm/copy-tasks-from-inbox)
+  ;;   (find-file org-index-file)
+  ;;   (flycheck-mode -1)
+  ;;   (end-of-buffer))
 
-	;; (global-set-key (kbd "C-c i") 'sm/open-index-file)
+  ;; (global-set-key (kbd "C-c i") 'sm/open-index-file)
 #+END_SRC
 
 Hit =M-n= to quickly open up a capture template for a new todo.
 
 #+BEGIN_SRC emacs-lisp
-	;; (defun org-capture-todo ()
-	;;   (interactive)
-	;;   (org-capture :keys "t"))
+  ;; (defun org-capture-todo ()
+  ;;   (interactive)
+  ;;   (org-capture :keys "t"))
 
-	;; (global-set-key (kbd "M-n") 'org-capture-todo)
-	;; (add-hook 'gfm-mode-hook
-	;;           (lambda () (local-set-key (kbd "M-n") 'org-capture-todo)))
-	;; (add-hook 'haskell-mode-hook
-	;;           (lambda () (local-set-key (kbd "M-n") 'org-capture-todo)))
+  ;; (global-set-key (kbd "M-n") 'org-capture-todo)
+  ;; (add-hook 'gfm-mode-hook
+  ;;           (lambda () (local-set-key (kbd "M-n") 'org-capture-todo)))
+  ;; (add-hook 'haskell-mode-hook
+  ;;           (lambda () (local-set-key (kbd "M-n") 'org-capture-todo)))
 #+END_SRC
 
 ** Exporting
