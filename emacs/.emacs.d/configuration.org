@@ -356,6 +356,21 @@ Indent with 2 spaces.
                     sh-indentation 2)))
 #+END_SRC
 
+** Python
+
+Enable =elpy=
+
+#+BEGIN_SRC emacs-lisp
+(elpy-enable)
+#+END_SRC
+
+Enable =flycheck=
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init (global-flycheck-mode))
+#+END_SRC
+
 * Publishing and task management with Org-mode
 
 ** Display preferences
