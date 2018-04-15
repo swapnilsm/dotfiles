@@ -1,7 +1,7 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Swapnil Mahajan
 #+EMAIL: myself@swapnilsm.me
-#+OPTIONS: num:nil
+#+OPTIONS: toc:nil num:nil
 
 * Use sensible-defaults.el
 
