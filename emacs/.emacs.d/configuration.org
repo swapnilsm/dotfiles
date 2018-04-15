@@ -157,6 +157,16 @@ Following fixes the =neotree= /Cannot make side window the only window/ issue
   (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.4)))
 #+END_SRC
 
+** Configure =multiple-cursors=
+
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :bind (("C-S-c C-S-c" . mc/edit-lines)
+           ("C->" . mc/mark-next-like-this)
+           ("C-<" . mc/mark-previous-like-this)
+           ("C-c C-<" . mc/mark-all-like-this)))
+#+END_SRC
+
 * UI preferences
 ** Tweak window chrome
 
