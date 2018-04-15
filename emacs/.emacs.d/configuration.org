@@ -168,22 +168,14 @@ Following fixes the =neotree= /Cannot make side window the only window/ issue
 #+END_SRC
 
 * UI preferences
-** Tweak window chrome
+** Show menu bar
 
-I don't usually use the menu or scroll bar, and they take up useful space.
+I like to see the menu-bar. Sometimes it helps me in fixing the issue.
 
 #+BEGIN_SRC emacs-lisp
   (tool-bar-mode 0)
-  (menu-bar-mode 0)
   (when window-system
     (scroll-bar-mode -1))
-#+END_SRC
-
-The default frame title isn't useful. This binds it to the name of the current
-project:
-
-#+BEGIN_SRC emacs-lisp
-  (setq frame-title-format '((:eval (projectile-project-name))))
 #+END_SRC
 
 ** Use spacemacs-theme
@@ -379,6 +371,22 @@ Enable =flycheck=
   (use-package flycheck
     :ensure t
     :init (global-flycheck-mode))
+#+END_SRC
+
+** Yasnippet
+
+I use =yasnippet= mainly for =python-mode=
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :config
+    (yas-global-mode 1))
+#+END_SRC
+
+Add snippets for yasnippet
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet-snippets)
 #+END_SRC
 
 * Publishing and task management with Org-mode
