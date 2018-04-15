@@ -167,6 +167,14 @@ Following fixes the =neotree= /Cannot make side window the only window/ issue
            ("C-c C-<" . mc/mark-all-like-this)))
 #+END_SRC
 
+** Save file positions
+
+#+BEGIN_SRC emacs-lisp
+  (use-package saveplace
+    :init
+    (save-place-mode 1))
+#+END_SRC
+
 * UI preferences
 ** Show menu bar
 
@@ -227,6 +235,17 @@ programming.
 #+END_SRC
 
 * Programming customizations
+
+Setup =ispell= path
+
+#+BEGIN_SRC emacs-lisp
+  (use-package flyspell
+    :defer t
+    :init
+    :config
+    (setq ispell-program-name "/usr/local/bin/ispell"))
+
+#+END_SRC
 
 I always use spaces instead of tabs.
 
@@ -311,10 +330,15 @@ I'd like to start in the insert state when writing a commit message.
 Enable =helm-projectile=
 
 #+BEGIN_SRC emacs-lisp
-  (projectile-global-mode)
-  (setq projectile-keymap-prefix (kbd "C-c p"))
-  (require 'helm-projectile)
-  (helm-projectile-on)
+  (use-package projectile
+    :config
+    (projectile-global-mode)
+    (setq projectile-enable-caching t)
+    (setq projectile-keymap-prefix (kbd "C-c p")))
+
+  (use-package helm-projectile
+    :config
+    (helm-projectile-on))
 #+END_SRC
 
 # Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky enough
@@ -331,13 +355,13 @@ Enable =helm-projectile=
 #   (global-set-key (kbd "C-c C-v") 'sm/search-project-for-symbol-at-point)
 # #+END_SRC
 
-When I visit a project with =projectile-switch-project=, the default action is
-to search for a file in that project. I'd rather just open up the top-level
-directory of the project in =neotree= and find (or create) new files from there.
+# When I visit a project with =projectile-switch-project=, the default action is
+# to search for a file in that project. I'd rather just open up the top-level
+# directory of the project in =neotree= and find (or create) new files from there.
 
-#+BEGIN_SRC emacs-lisp
-  (setq projectile-switch-project-action 'neotree-projectile-action)
-#+END_SRC
+# #+BEGIN_SRC emacs-lisp
+#   (setq projectile-switch-project-action 'neotree-projectile-action)
+# #+END_SRC
 
 # I'd like to /always/ be able to recursively fuzzy-search for files, not just
 # when I'm in a Projecile-defined project. This uses the current directory as a
@@ -352,10 +376,13 @@ directory of the project in =neotree= and find (or create) new files from there.
 Indent with 2 spaces.
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'sh-mode-hook
-            (lambda ()
-              (setq sh-basic-offset 2
-                    sh-indentation 2)))
+  (use-package sh-script
+    :mode (("\\.*bashrc$" . sh-mode)
+           ("\\.*bash_profile" . sh-mode)
+           ("\\.sh\\'" . sh-mode))
+    :config
+    (setq-default sh-indentation 2
+                  sh-basic-offset 2))
 #+END_SRC
 
 ** Python
@@ -363,13 +390,17 @@ Indent with 2 spaces.
 Enable =elpy=
 
 #+BEGIN_SRC emacs-lisp
-(elpy-enable)
+(use-package python
+  :mode ("\\.py\\'" . python-mode))
+
+(use-package elpy
+  :after python
+  :config (elpy-enable))
 #+END_SRC
 
 Enable =flycheck=
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
-    :ensure t
     :init (global-flycheck-mode))
 #+END_SRC
 
