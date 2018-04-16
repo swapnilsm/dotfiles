@@ -234,18 +234,22 @@ programming.
   (add-hook 'vc-dir-mode-hook 'turn-on-diff-hl-mode)
 #+END_SRC
 
-* Programming customizations
+** Smart mode line
 
-Setup =ispell= path
+Fancier mode line :)
 
 #+BEGIN_SRC emacs-lisp
-  (use-package flyspell
-    :defer t
-    :init
-    :config
-    (setq ispell-program-name "/usr/local/bin/ispell"))
+  (use-package smart-mode-line
+    :init (setq sml/no-confirm-load-theme t))
 
+  (use-package smart-mode-line-powerline-theme
+     :after smart-mode-line
+     :config
+      (sml/setup)
+      (sml/apply-theme 'powerline))
 #+END_SRC
+
+* Programming customizations
 
 I always use spaces instead of tabs.
 
@@ -274,6 +278,15 @@ output.
 
 #+BEGIN_SRC emacs-lisp
   (setq compilation-scroll-output t)
+#+END_SRC
+
+** Set =exec-path=
+
+Most of the newly installed programs on OSX go to =/usr/local/bin=.
+Let's add that to =exec-path=
+
+#+BEGIN_SRC emacs-lisp
+(setq exec-path (append exec-path '("/usr/local/bin")))
 #+END_SRC
 
 ** CSS and Sass
@@ -390,12 +403,12 @@ Indent with 2 spaces.
 Enable =elpy=
 
 #+BEGIN_SRC emacs-lisp
-(use-package python
-  :mode ("\\.py\\'" . python-mode))
+  (use-package python
+    :mode ("\\.py\\'" . python-mode))
 
-(use-package elpy
-  :after python
-  :config (elpy-enable))
+  (use-package elpy
+    :after python
+    :config (elpy-enable))
 #+END_SRC
 
 Enable =flycheck=
@@ -404,12 +417,23 @@ Enable =flycheck=
     :init (global-flycheck-mode))
 #+END_SRC
 
+Leave everything else, start using PipEnv.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package pipenv
+    :hook (python-mode . pipenv-mode)
+    :init
+    (setq pipenv-projectile-after-switch-function #'pipenv-projectile-after-switch-extended))
+#+END_SRC
+
 ** Yasnippet
 
 I use =yasnippet= mainly for =python-mode=
 
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
+    :init
+    (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
     :config
     (yas-global-mode 1))
 #+END_SRC
@@ -658,3 +682,5 @@ when exporting.
 #+BEGIN_SRC emacs-lisp
   (setq org-export-with-smart-quotes t)
 #+END_SRC
+* Credits
+Thanks to [[https://github.com/hrs][Harry R. Schwartz]] for the inspiration.
