@@ -47,12 +47,6 @@ Always compile packages, and use the newest version available.
         user-mail-address "myself@swapnilsm.me")
 #+END_SRC
 
-* Add =resources= to =load-path=
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path "~/.emacs.d/resources/")
-#+END_SRC
-
 * Utility functions
 
 Define a big ol' bunch of handy utility functions.
@@ -446,6 +440,17 @@ Add snippets for yasnippet
 
 * Publishing and task management with Org-mode
 
+** Spellcheck
+
+#+BEGIN_SRC emacs-lisp
+  (use-package flyspell)
+
+  (use-package helm-flyspell
+   :after flyspell
+   :init
+   (define-key flyspell-mode-map (kbd "C-;") 'helm-flyspell-correct))
+#+END_SRC
+
 ** Display preferences
 
 I like to see an outline of pretty bullets instead of a list of asterisks.
@@ -683,4 +688,5 @@ when exporting.
   (setq org-export-with-smart-quotes t)
 #+END_SRC
 * Credits
+
 Thanks to [[https://github.com/hrs][Harry R. Schwartz]] for the inspiration.
