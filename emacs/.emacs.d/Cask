@@ -17,3 +17,5 @@
 (depends-on "solarized-theme")
 (depends-on "spacemacs-theme")
 (depends-on "use-package")
+(depends-on "pony-mode")
+(depends-on "yasnippet-snippets")
