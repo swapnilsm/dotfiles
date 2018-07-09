@@ -283,7 +283,8 @@ Let's add that to =exec-path=
   (setq exec-path (append exec-path '(
                                       "/usr/local/bin"
                                       "/Users/swapnilsm/go/bin"
-                                      "/usr/local/go/bin")))
+                                      "/usr/local/go/bin"
+                                      "/Applications/Eclipse.app/Contents/Eclipse")))
 #+END_SRC
 
 ** CSS and Sass
@@ -346,6 +347,8 @@ Enable =helm-projectile=
     (projectile-global-mode)
     (setq projectile-enable-caching t)
     (setq projectile-keymap-prefix (kbd "C-c p")))
+
+  (use-package helm)
 
   (use-package helm-projectile
     :config
@@ -441,6 +444,14 @@ Leave everything else, start using PipEnv.
 ;  (setq
 ;   pipenv-projectile-after-switch-function
 ;   #'pipenv-projectile-after-switch-extended))
+#+END_SRC
+
+** Java
+Use =eclim=
+#+BEGIN_SRC emacs-lisp
+  (use-package eclim
+    :init
+  (add-hook 'java-mode-hook #'eclim-mode))
 #+END_SRC
 
 ** Go
