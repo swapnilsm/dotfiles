@@ -1,0 +1,531 @@
+#+TITLE: MY DOOM EMACS
+#+AUTHOR: Swapnil Mahajan (swapnilsm@)
+#+STARTUP: SHOWEVERYTHING
+#+OPTIONS: TOC:2
+#+PROPERTY: header-args:elisp :tangle ~/.doom.d/config.el
+
+* TABLE OF CONTENTS                                                                                                :TOC:
+- [[#help][HELP]]
+- [[#identity][IDENTITY]]
+- [[#appearance][APPEARANCE]]
+- [[#org][ORG]]
+  - [[#org-directory][ORG DIRECTORY]]
+  - [[#capture-templates][CAPTURE TEMPLATES]]
+  - [[#preview][PREVIEW]]
+  - [[#default-apps][DEFAULT APPS]]
+  - [[#priorities][PRIORITIES]]
+  - [[#agenda][AGENDA]]
+  - [[#super-agenda][SUPER AGENDA]]
+  - [[#agenda-property][AGENDA PROPERTY]]
+  - [[#copy-link-at-point][COPY LINK AT POINT]]
+  - [[#insert-current-org-timer][INSERT CURRENT ORG TIMER]]
+  - [[#insert-current-date][INSERT CURRENT DATE]]
+  - [[#google-calendar][GOOGLE CALENDAR]]
+  - [[#org-pandoc-import][ORG PANDOC IMPORT]]
+  - [[#auto-tangle][AUTO TANGLE]]
+- [[#expand-region][EXPAND REGION]]
+- [[#beacon][BEACON]]
+- [[#dimmer][DIMMER]]
+- [[#auto-revert][AUTO REVERT]]
+- [[#hacks][HACKS]]
+- [[#leetcode][LEETCODE]]
+- [[#python][PYTHON]]
+- [[#command-log-mode][COMMAND LOG MODE]]
+- [[#protobuf-mode][PROTOBUF MODE]]
+- [[#google][Google]]
+- [[#elisp][ELISP]]
+- [[#org-roam][ORG ROAM]]
+
+* HELP
+
+Here are some additional functions/macros that could help you configure Doom:
+
+- =load!= for loading external *.el files relative to this one
+- =use-package!= for configuring packages
+- =after!= for running code after a package has loaded
+- =add-load-path!= for adding directories to the =load-path=, relative to
+  this file. Emacs searches the =load-path= when you load packages with
+  =require= or =use-package=.
+- =map!= for binding new keys
+
+To get information about any of these functions/macros, move the cursor over
+the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+This will open documentation for it, including demos of how they are used.
+
+You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+they are implemented.
+
+* IDENTITY
+Some functionality uses this to identify you, e.g. GPG configuration, email
+clients, file templates and snippets.
+#+BEGIN_SRC elisp
+(setq user-full-name "Swapnil Mahajan"
+      user-mail-address "swapnilsm@google.com")
+#+END_SRC
+
+* APPEARANCE
+
+Doom exposes five (optional) variables for controlling fonts in Doom. Here
+are the three important ones:
+
++ =doom-font=
++ =doom-variable-pitch-font=
++ =doom-big-font= -- used for =doom-big-font-mode=; use this for
+  presentations or streaming.
+
+They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+font string. You generally only need these two:
+#+BEGIN_SRC elisp
+;; (setq doom-font (font-spec :family "Meslo LG L for Powerline" :size 15)
+;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+
+;; (setq doom-font (font-spec :family "Monaco" :size 13))
+(setq ns-use-thin-smoothing t)
+;; (setq ns-antialias-text t)
+;; (setq doom-font (font-spec :family "Iosevka Aile" :size 15 :weight 'light))
+;; (setq doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 15 :weight 'light))
+(setq doom-font (font-spec :family "Fira Code" :size 15 :weight 'light))
+(setq doom-variable-pitch-font (font-spec :family "Fira Code" :size 15 :weight 'light))
+;; (setq doom-font (font-spec :family "Source Code Pro" :size 15 :weight 'light))
+;; (setq doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 15 :weight 'light))
+#+END_SRC
+
+There are two ways to load a theme. Both assume the theme is installed and
+available. You can either set =doom-theme= or manually load a theme with the
+=load-theme= function. This is the default:
+#+BEGIN_SRC elisp
+;; (setq doom-theme 'doom-monokai-spectrum)
+;; (setq doom-theme 'doom-snazzy)
+(setq doom-theme 'doom-dracula)
+#+END_SRC
+
+This determines the style of line numbers in effect. If set to =nil=, line
+numbers are disabled. For relative line numbers, set this to =relative=.
+#+BEGIN_SRC elisp
+(setq display-line-numbers-type nil)
+#+END_SRC
+
+Start Emacs in maximized mode
+#+BEGIN_SRC elisp
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+#+END_SRC
+
+Ivy frame position
+#+BEGIN_SRC elisp
+;; (after! ivy-posframe
+;;   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-top-center))))
+#+END_SRC
+
+Display relative line numbers
+#+BEGIN_SRC elisp
+;; (setq display-line-numbers-type 'relative)
+#+END_SRC
+
+* ORG
+** ORG DIRECTORY
+If you use =org= and don't want your org files in the default location below,
+change =org-directory=. It must be set before org loads!
+#+BEGIN_SRC elisp
+(use-package! org
+  :init
+  (setq org-directory "~/org-files/")
+  (setq org-use-property-inheritance t)
+  :commands (org-capture org-agenda)
+  :config
+  (message "Org mode loaded")
+  ;; (org-clock-persistence-insinuate)
+  ;; (setq org-clock-persist t
+  ;;       org-clock-persist-query-resume nil
+  ;;       org-clock-auto-clock-resolution 'when-no-clock-is-running
+  ;;       org-clock-history-length 23
+  ;;       org-clock-in-resume t)
+  (setq org-tags-column -120))
+#+END_SRC
+
+#+RESULTS:
+: t
+
+** CAPTURE TEMPLATES
+#+BEGIN_SRC elisp
+(after! org
+  (use-package! doct
+    :config
+    (setq org-capture-templates
+          (doct '(("Todo" :keys "t"
+                   :file "todo.org"
+                   :headline "Inbox"
+                   :prepend t
+                   :template ("* TODO %^{Description} %?%c"))
+                  ("Interview" :keys "i"
+                   :file "~/roam-files/20210920135449-interviews.org"
+                   :headline "Tasks"
+                   :prepend t
+                   :template ("* TODO Interview %^{Name}%? [[[%^{My gHire Link}][My gHire]]]"
+                              "DEADLINE: %^{Date}t")))))))
+#+END_SRC
+** PREVIEW
+#+BEGIN_SRC elisp
+(after! org
+  (map! :localleader
+        :map org-mode-map
+        :desc "preview" "p" #'grip-restart-preview))
+#+END_SRC
+** DEFAULT APPS
+#+BEGIN_SRC elisp
+(after! org
+  (setq org-file-apps
+        (append
+         '(
+           (auto-mode . emacs)
+           (directory . emacs)
+           ("\\.docx?\\'" . default)
+           )
+         org-file-apps)))
+#+END_SRC
+
+** PRIORITIES
+*** Appearance
+#+BEGIN_SRC elisp
+;; (use-package! org-fancy-priorities
+;;   :hook
+;;   (org-mode . org-fancy-priorities-mode)
+;;   :config
+;;   (setq org-fancy-priorities-list '("" "⬆" "⬇" "")))
+#+END_SRC
+*** Inheritance
+#+BEGIN_SRC elisp
+(after! org
+  (setq org-use-property-inheritance t))
+#+END_SRC
+
+** AGENDA
+*** Load org-agenda
+#+BEGIN_SRC elisp
+(use-package! org-agenda
+  :after org
+  :commands org-agenda
+  :config
+  (setq org-refile-use-outline-path t)
+  (setq org-refile-targets '((nil . (:tag . "TASKS"))
+                             (org-agenda-files :tag . "TASKS")))
+  (message "org-agenda loaded"))
+#+END_SRC
+
+#+RESULTS:
+: t
+
+*** Custom functions
+**** Get property value: SHORT
+#+BEGIN_SRC elisp
+(defun sm-get-short-prefix ()
+  (let ((shortname (org-entry-get-with-inheritance "SHORT"))
+        (shortfilename (first (last (car (org-collect-keywords '("SHORT"))))))
+        (trucname (truncate-string-to-width (or (car (last (org-get-outline-path))) "") 40 nil nil "...")))
+    (cond (shortname shortname)
+          (shortfilename shortfilename)
+          (t trucname))))
+#+END_SRC
+
+**** Agenda skip function
+#+BEGIN_SRC elisp
+(defun sm-is-mixed-category ()
+  (string= "mixed" (org-get-category)))
+(defun sm-am-i-the-owner()
+  (string= "swapnilsm" (org-entry-get-with-inheritance "OWNER")))
+(defun sm-agenda-skip-function ()
+  (let ((next-headline (save-excursion (org-entry-end-position))))
+    (if (and (sm-is-mixed-category)
+             (not (sm-am-i-the-owner)))
+        next-headline
+      nil)))
+#+END_SRC
+**** Get calendar agenda files
+#+BEGIN_SRC elisp
+(defun sm-get-calendar-agenda-files ()
+  (list "~/work-sync/org-files/schedule/schedule.org"))
+#+END_SRC
+**** Get work agenda files
+#+BEGIN_SRC elisp
+(defun sm-get-work-agenda-files ()
+  (list "~/work-sync/org-files/"))
+#+END_SRC
+**** Get personal agenda files
+#+BEGIN_SRC elisp
+(defun sm-get-personal-agenda-files ()
+  (list "~/personal-sync/org-files/"))
+#+END_SRC
+**** Get org-roam agenda files
+#+BEGIN_SRC elisp
+(defun sm/org-roam-filter-by-tag (tag-name)
+  (lambda (node)
+    (member tag-name (org-roam-node-tags node))))
+
+(defun sm/org-roam-list-notes-by-tag (tag-name)
+  (mapcar #'org-roam-node-file
+          (seq-filter
+           (sm/org-roam-filter-by-tag tag-name)
+           (org-roam-node-list))))
+
+(defun sm/get-org-roam-agenda-files ()
+  (sm/org-roam-list-notes-by-tag "Project"))
+
+(defun sm/refresh-agenda-list ()
+  (interactive)
+  (setq org-agenda-files (append (sm/get-org-roam-agenda-files) (sm-get-personal-agenda-files) (sm-get-work-agenda-files)))
+  (message "Refreshed org-agenda-files"))
+#+END_SRC
+
+*** Sensible defaults
+#+BEGIN_SRC elisp
+(after! org-agenda
+  (map! :localleader
+        :map org-agenda-mode-map
+        "s" #'org-save-all-org-buffers)
+  (setq org-agenda-skip-scheduled-if-deadline-is-shown t
+        org-agenda-include-deadlines t
+        org-agenda-show-all-dates nil
+        org-agenda-compact-blocks t
+        org-agenda-show-inherited-tags nil
+        org-agenda-start-day nil
+        org-agenda-breadcrumbs-separator " > "
+        org-agenda-current-time-string "            "
+        org-agenda-prefix-format
+        '((agenda . " %i %?-12t %s %50b")
+          (todo . " %i %?-12t % s %50(sm-get-short-prefix) > ")
+          (tags . " %i %?-12t % s %50(sm-get-short-prefix) > ")
+          (search . " %i %?-12t % s %50(sm-get-short-prefix) > "))
+        org-agenda-span 1))
+#+END_SRC
+
+#+RESULTS:
+: 1
+
+*** Custom commands
+***** By assignee
+#+BEGIN_SRC elisp
+(after! org-agenda
+  (add-to-list 'org-agenda-custom-commands
+               '("oo"  "By Owner"
+                 ((agenda "" (
+                              (org-agenda-skip-deadline-if-done nil)
+                              (org-agenda-skip-scheduled-if-done nil)
+                              (org-agenda-use-time-grid nil)
+                              (org-super-agenda-groups
+                               '(
+                                 (:auto-property "OWNER")
+                                 )
+                               )))))))
+#+END_SRC
+
+***** My agenda
+#+BEGIN_SRC elisp
+(after! org-agenda
+  (add-to-list 'org-agenda-custom-commands
+               '("p"  "My agenda"
+                 ((agenda "" (
+                              (org-agenda-skip-function 'sm-agenda-skip-function)
+                              (org-agenda-span 'day)
+                              (org-agenda-clockreport-parameter-plist '(:narrow 80 :maxlevel 5 :fileskip0 t :link t :indent t :tcolumns 2))
+                              (org-super-agenda-groups
+                               '(
+                                 (:name "Calendar"
+                                  :time-grid t
+                                  :date today
+                                  :todo "TODAY"
+                                  :scheduled today
+                                  :order 9)
+                                 (:name "Overdue - Not started"
+                                  :and (:deadline past
+                                        :not (:todo "STRT"))
+                                  :order 1)
+                                 (:name "Overdue - Started"
+                                  :and (:deadline past
+                                        :todo "STRT")
+                                  :order 2)
+                                 (:name "Due Today"
+                                  :deadline today
+                                  :order 3)
+                                 (:name "Due Soon"
+                                  :deadline future
+                                  :order 4)
+                                 (:discard (:anything t))
+                                 ))
+                              ))))))
+#+END_SRC
+
+** SUPER AGENDA
+#+BEGIN_SRC elisp
+(use-package! org-super-agenda
+  :after org-agenda
+  :init
+  (setq org-super-agenda-groups '())
+  (setq org-super-agenda-header-map (make-sparse-keymap))
+  :config
+  (org-super-agenda-mode)
+  (message "org-super-agenda loaded"))
+#+END_SRC
+
+** AGENDA PROPERTY
+#+BEGIN_SRC elisp
+(use-package! org-agenda-property
+  :after org-agenda
+  :config
+  (setq org-agenda-property-list '("NAME")
+        org-agenda-property-position 'where-it-fits))
+#+END_SRC
+** COPY LINK AT POINT
+#+BEGIN_SRC elisp
+(map! :localleader
+      :map org-mode-map
+      "ly" #'link-hint-copy-link-at-point
+      )
+#+END_SRC
+** INSERT CURRENT ORG TIMER
+#+BEGIN_SRC elisp
+(defun sm-insert-current-org-timer ()
+  (interactive)
+  (save-excursion
+    (if (org-in-regexp org-link-bracket-re 1)
+        (let ((remove (list (match-beginning 0) (match-end 0))))
+          (apply 'delete-region (list (match-beginning 0) (match-end 0)))))
+    (progn (org-timer)
+           (backward-delete-char 1))))
+(after! org
+  (map! :localleader
+        :map org-mode-map
+        :nv "i" nil
+        (:prefix "i"
+         :desc "Insert current timer" "t" #'sm-insert-current-org-timer)))
+#+END_SRC
+
+#+RESULTS:
+
+** INSERT CURRENT DATE
+#+BEGIN_SRC elisp
+(defun sm-insert-current-date () (interactive)
+       (insert (format-time-string "%B %e, %Y")))
+(after! org
+ (map! :leader
+      (:prefix "i"
+       :desc "Insert current date" "d" #'sm-insert-current-date)))
+#+END_SRC
+** GOOGLE CALENDAR
+#+BEGIN_SRC elisp
+;; (use-package! org-gcal
+;;   :after org-agenda
+;;   :init
+;;   (setq org-gcal-client-id "<client-id>"
+;;         org-gcal-client-secret "client-secret"
+;;         org-gcal-file-alist '(
+;;                               ("swapnilsm@google.com" . "~/work-sync/org-files/schedule/schedule.org")
+;;                               ))
+;;   ;; (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-fetch)))
+;;   (run-with-idle-timer 1800 t (lambda () (org-gcal-fetch)))
+;;   )
+#+END_SRC
+** ORG PANDOC IMPORT
+#+BEGIN_SRC elisp
+(use-package! org-pandoc-import :after org)
+#+END_SRC
+** AUTO TANGLE
+#+BEGIN_SRC elisp
+;; Since we don't want to disable org-confirm-babel-evaluate all
+;; of the time, do it around the after-save-hook
+(defun sm/org-babel-tangle-dont-ask ()
+  ;; Dynamic scoping to the rescue
+  (let ((org-confirm-babel-evaluate nil))
+    (org-babel-tangle)))
+
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'sm/org-babel-tangle-dont-ask
+                                              'run-at-end 'only-in-org-mode)))
+
+#+END_SRC
+* EXPAND REGION
+#+BEGIN_SRC elisp
+(map! :nv "C-," #'er/expand-region)
+#+END_SRC
+
+* BEACON
+#+BEGIN_SRC elisp
+(use-package! beacon
+  :config (beacon-mode))
+#+END_SRC
+
+* DIMMER
+#+BEGIN_SRC elisp
+(use-package! dimmer
+  :config
+  (setq dimmer-fraction 0.50)
+  (dimmer-mode)
+  )
+#+END_SRC
+
+* AUTO REVERT
+#+BEGIN_SRC elisp
+(global-auto-revert-mode 1)
+#+END_SRC
+* HACKS
+#+BEGIN_SRC elisp
+(use-package! dired
+  :init
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired nil))
+  :config
+  (map! :map dired-mode-map :desc "Easy key for directory-up" :n "h" #'dired-up-directory)
+  (map! :map dired-mode-map :desc "Easy key for directory-down/open" :n "l" #'dired-find-file))
+#+END_SRC
+* LEETCODE
+#+BEGIN_SRC elisp
+(use-package! leetcode
+  :init
+  (setq leetcode-save-solutions t)
+  (setq leetcode-directory "~/leetcode")
+  :commands (leetcode))
+#+END_SRC
+* PYTHON
+#+BEGIN_SRC elisp
+(after! python
+  (setq python-shell-interpreter "python3")
+  (setq python-shell-completion-native-enable nil))
+#+END_SRC
+* COMMAND LOG MODE
+#+BEGIN_SRC elisp
+(use-package! command-log-mode
+  :commands (command-log-mode))
+#+END_SRC
+* PROTOBUF MODE
+#+BEGIN_SRC elisp
+;; (use-package! protobuf-mode)
+#+END_SRC
+* Google
+#+BEGIN_SRC elisp
+;; (use-package! google)
+#+END_SRC
+* ELISP
+#+BEGIN_SRC elisp
+(setq lexical-binding t)
+#+END_SRC
+* ORG ROAM
+#+BEGIN_SRC elisp
+  (use-package! org-roam
+    :after org-agenda
+    :config
+    (setq org-roam-completion-everywhere nil)
+    (message "org-roam loaded")
+    (sm/refresh-agenda-list)
+    :custom
+    (org-roam-directory "~/roam-files")
+    (org-roam-capture-templates
+     '(("d" "default" plain "%?"
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                           "#+TITLE: ${title}\n#+FILETAGS: \n")
+        :unnarrowed t)
+       ("i" "interview notes" plain (file "~/roam-files/templates/interview-note-template.org")
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+OPTIONS: TOC:nil\n#+STARTUP: overview\n#+FILETAGS: Interview\n")
+        :unnarrowed t)
+       ("p" "project" plain (file "~/roam-files/templates/project-note-template.org")
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+OPTIONS: TOC:nil\n#+FILETAGS: Project\n"))
+       )
+     )
+    )
+#+END_SRC
