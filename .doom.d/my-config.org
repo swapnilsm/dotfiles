@@ -18,6 +18,7 @@
   - [[#agenda][AGENDA]]
   - [[#super-agenda][SUPER AGENDA]]
   - [[#agenda-property][AGENDA PROPERTY]]
+  - [[#pomodoro][POMODORO]]
   - [[#copy-link-at-point][COPY LINK AT POINT]]
   - [[#insert-current-org-timer][INSERT CURRENT ORG TIMER]]
   - [[#insert-current-date][INSERT CURRENT DATE]]
@@ -390,6 +391,15 @@ change =org-directory=. It must be set before org loads!
   (setq org-agenda-property-list '("NAME")
         org-agenda-property-position 'where-it-fits))
 #+END_SRC
+** POMODORO
+#+BEGIN_SRC elisp
+(use-package! org-pomodoro
+  :after org-agenda
+  :init
+  (setq org-pomodoro-finished-sound "~/.doom.d/sounds/pomodoro-finished-sound.wav"))
+
+#+END_SRC
+
 ** COPY LINK AT POINT
 #+BEGIN_SRC elisp
 (map! :localleader
@@ -516,7 +526,11 @@ change =org-directory=. It must be set before org loads!
 #+END_SRC
 * Google
 #+BEGIN_SRC elisp
-;; (use-package! google)
+(use-package! google)
+(use-package! gogolink
+  :after google
+  :hook ((org-mode . gogolink-mode)
+         (org-agenda-mode . gogolink-mode)))
 #+END_SRC
 * ORG ROAM
 #+BEGIN_SRC elisp

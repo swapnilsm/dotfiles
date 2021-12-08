@@ -48,6 +48,8 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
+(let ((default-directory "/Library/Application Support/Emacs/site-lisp/emacs-google-config"))
+  (normal-top-level-add-subdirs-to-load-path))
 
 (package! expand-region)
 (package! beacon)
@@ -65,4 +67,5 @@
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 (package! protobuf-mode)
-;; (package! google :built-in 'prefer)
+(package! google :built-in 'prefer)
+(package! gogolink :built-in 'prefer)
