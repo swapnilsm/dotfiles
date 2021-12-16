@@ -36,6 +36,7 @@
 - [[#protobuf-mode][PROTOBUF MODE]]
 - [[#google][Google]]
 - [[#org-roam][ORG ROAM]]
+- [[#undo-tree][UNDO TREE]]
 
 * HELP
 
@@ -558,4 +559,9 @@ change =org-directory=. It must be set before org loads!
        )
      )
     )
+#+END_SRC
+* UNDO TREE
+#+BEGIN_SRC elisp
+(use-package! undo-tree
+  :hook (evil-local-mode . 'turn-on-undo-tree-mode))
 #+END_SRC
