@@ -67,5 +67,8 @@
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 (package! protobuf-mode)
-(package! google :built-in 'prefer)
-(package! gogolink :built-in 'prefer)
+;; (package! google :built-in 'prefer)
+;; (package! gogolink :built-in 'prefer)
+(unpin! org-roam)
+(package! org-roam-ui)
+(package! ox-gfm)
