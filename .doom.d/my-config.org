@@ -555,6 +555,7 @@ change =org-directory=. It must be set before org loads!
            :desc"Find project" "p" #'sm/org-roam-find-project))
     :custom
     (org-roam-directory "~/roam-files")
+    (+org-roam-open-buffer-on-find-file 'nil)
     (org-roam-capture-templates
      '(("d" "default" plain "%?"
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
@@ -569,6 +570,7 @@ change =org-directory=. It must be set before org loads!
      )
     )
 #+END_SRC
+
 ** ORG ROAM UI
 #+BEGIN_SRC elisp
 (use-package! websocket
