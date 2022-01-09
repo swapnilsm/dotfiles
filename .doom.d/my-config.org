@@ -39,6 +39,7 @@
   - [[#org-roam-1][ORG ROAM]]
   - [[#org-roam-ui][ORG ROAM UI]]
 - [[#undo-tree][UNDO TREE]]
+- [[#vterm][VTERM]]
 
 * HELP
 
@@ -592,4 +593,11 @@ change =org-directory=. It must be set before org loads!
 #+BEGIN_SRC elisp
 ;; (use-package! undo-tree
 ;;   :hook (evil-local-mode . 'turn-on-undo-tree-mode))
+#+END_SRC
+* VTERM
+Enable kill previous word with Meta-Backspace
+#+BEGIN_SRC elisp
+(map! :after vterm
+      :map vterm-mode-map
+      :ni "M-<backspace>" #'vterm-send-C-w)
 #+END_SRC
