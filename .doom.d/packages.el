@@ -72,3 +72,4 @@
 (unpin! org-roam)
 (package! org-roam-ui)
 (package! ox-gfm)
+(package! org-ql)

@@ -9,10 +9,15 @@
 - [[#enable-lexical-binding][ENABLE LEXICAL BINDING]]
 - [[#identity][IDENTITY]]
 - [[#appearance][APPEARANCE]]
+  - [[#font][FONT]]
+  - [[#theme][THEME]]
+  - [[#splash-image][SPLASH IMAGE]]
+  - [[#other][OTHER]]
 - [[#org][ORG]]
   - [[#org-directory][ORG DIRECTORY]]
   - [[#capture-templates][CAPTURE TEMPLATES]]
   - [[#preview][PREVIEW]]
+  - [[#org-ql][ORG QL]]
   - [[#default-apps][DEFAULT APPS]]
   - [[#priorities][PRIORITIES]]
   - [[#agenda][AGENDA]]
@@ -40,6 +45,7 @@
   - [[#org-roam-ui][ORG ROAM UI]]
 - [[#undo-tree][UNDO TREE]]
 - [[#vterm][VTERM]]
+- [[#company][COMPANY]]
 
 * HELP
 
@@ -77,6 +83,7 @@ clients, file templates and snippets.
 
 * APPEARANCE
 
+** FONT
 Doom exposes five (optional) variables for controlling fonts in Doom. Here
 are the three important ones:
 
@@ -106,6 +113,7 @@ font string. You generally only need these two:
 (setq doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
 #+END_SRC
 
+** THEME
 There are two ways to load a theme. Both assume the theme is installed and
 available. You can either set =doom-theme= or manually load a theme with the
 =load-theme= function. This is the default:
@@ -117,6 +125,13 @@ available. You can either set =doom-theme= or manually load a theme with the
 (setq doom-theme 'doom-one)
 #+END_SRC
 
+** SPLASH IMAGE
+Update the normal ASCII splash image on every startup
+#+BEGIN_SRC elisp
+(setq fancy-splash-image "~/dotfiles/.doom.d/pictures/iron-man-splash.png")
+#+END_SRC
+
+** OTHER
 This determines the style of line numbers in effect. If set to =nil=, line
 numbers are disabled. For relative line numbers, set this to =relative=.
 #+BEGIN_SRC elisp
@@ -137,6 +152,11 @@ Ivy frame position
 Display relative line numbers
 #+BEGIN_SRC elisp
 ;; (setq display-line-numbers-type 'relative)
+#+END_SRC
+
+Truncate file name displayed in the modeline to truncate all except the project name & file name
+#+BEGIN_SRC elisp
+(setq doom-modeline-buffer-file-name-style 'truncate-except-project)
 #+END_SRC
 
 * ORG
@@ -170,7 +190,7 @@ change =org-directory=. It must be set before org loads!
                    :file "todo.org"
                    :headline "Inbox"
                    :prepend t
-                   :template ("* TODO %^{Description} %?%c"))
+                   :template ("* TODO %^{Description} [[%c][%?]]"))
                   ("Interview" :keys "i"
                    :file "~/roam-files/20210920135449-interviews.org"
                    :headline "Tasks"
@@ -178,6 +198,7 @@ change =org-directory=. It must be set before org loads!
                    :template ("* TODO Interview %^{Name}%? [[[%^{My gHire Link}][My gHire]]]"
                               "DEADLINE: %^{Date}t")))))))
 #+END_SRC
+
 ** PREVIEW
 #+BEGIN_SRC elisp
 (after! org
@@ -185,6 +206,11 @@ change =org-directory=. It must be set before org loads!
   (map! :localleader
         :map org-mode-map
         :desc "preview" "p" #'grip-restart-preview))
+#+END_SRC
+** ORG QL
+#+BEGIN_SRC elisp
+(use-package! org-ql
+  :after org)
 #+END_SRC
 
 ** DEFAULT APPS
@@ -319,7 +345,7 @@ change =org-directory=. It must be set before org loads!
         org-agenda-current-time-string "            "
         org-agenda-prefix-format
         '((agenda . " %i %?-12t %s %50b")
-          (todo . " %i %?-12t % s %50(sm-get-short-prefix) > ")
+          (todo . " %i %?-12t %11s %50b")
           (tags . " %i %?-12t % s %50(sm-get-short-prefix) > ")
           (search . " %i %?-12t % s %50(sm-get-short-prefix) > "))
         org-agenda-span 1))
@@ -361,7 +387,7 @@ change =org-directory=. It must be set before org loads!
                                   :date today
                                   :todo "TODAY"
                                   :scheduled today
-                                  :order 9)
+                                  :order 4)
                                  (:name "Overdue - Not started"
                                   :and (:deadline past
                                         :not (:todo "STRT"))
@@ -375,11 +401,20 @@ change =org-directory=. It must be set before org loads!
                                   :order 3)
                                  (:name "Due Soon"
                                   :deadline future
-                                  :order 4)
+                                  :order 5)
+                                 (:name "Unplanned"
+                                  :deadline nil
+                                  :order 9)
                                  (:discard (:anything t))
                                  ))
-                              ))))))
+                              ))
+                  (todo "" ((org-agenda-overriding-header "")
+                            (org-super-agenda-groups '(
+                                                       (:name "Unplanned"
+                                                        :deadline nil
+                                                        :discard (:anything t))))))))))
 #+END_SRC
+
 
 ** SUPER AGENDA
 #+BEGIN_SRC elisp
@@ -600,4 +635,11 @@ Enable kill previous word with Meta-Backspace
 (map! :after vterm
       :map vterm-mode-map
       :ni "M-<backspace>" #'vterm-send-C-w)
+#+END_SRC
+* COMPANY
+Introduce delay before dropdown is shown
+#+BEGIN_SRC elisp
+(after! company
+  :config
+  (setq company-idle-delay 1))
 #+END_SRC
