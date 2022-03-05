@@ -30,6 +30,7 @@
   - [[#google-calendar][GOOGLE CALENDAR]]
   - [[#org-pandoc-import][ORG PANDOC IMPORT]]
   - [[#auto-tangle][AUTO TANGLE]]
+  - [[#presentation][PRESENTATION]]
 - [[#expand-region][EXPAND REGION]]
 - [[#beacon][BEACON]]
 - [[#dimmer][DIMMER]]
@@ -512,6 +513,12 @@ change =org-directory=. It must be set before org loads!
                                               'run-at-end 'only-in-org-mode)))
 
 #+END_SRC
+** PRESENTATION
+#+BEGIN_SRC elisp
+(after! org-re-reveal
+  (setq org-re-reveal-theme "league"))
+#+END_SRC
+
 * EXPAND REGION
 #+BEGIN_SRC elisp
 (map! :nv "C-," #'er/expand-region)
