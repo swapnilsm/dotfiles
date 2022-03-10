@@ -24,6 +24,7 @@
   - [[#super-agenda][SUPER AGENDA]]
   - [[#agenda-property][AGENDA PROPERTY]]
   - [[#pomodoro][POMODORO]]
+  - [[#auto-clockout][AUTO CLOCKOUT]]
   - [[#copy-link-at-point][COPY LINK AT POINT]]
   - [[#insert-current-org-timer][INSERT CURRENT ORG TIMER]]
   - [[#insert-current-date][INSERT CURRENT DATE]]
@@ -445,6 +446,12 @@ change =org-directory=. It must be set before org loads!
   :init
   (setq org-pomodoro-finished-sound "~/.doom.d/sounds/pomodoro-finished-sound.wav"))
 
+#+END_SRC
+** AUTO CLOCKOUT
+#+BEGIN_SRC elisp
+(after! org-clock
+ (setq org-clock-auto-clockout-timer 1800)
+ (org-clock-auto-clockout-insinuate))
 #+END_SRC
 
 ** COPY LINK AT POINT
