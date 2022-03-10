@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: action items
+# uuid:
+# key: trigger-key
+# condition: t
+# --
+
+* Action items [[[elisp:(org-update-all-dblocks)][Update]
+#+BEGIN: columnview :id global :match "/TODO|DONE" :format "%ITEM(What) %TAGS(Who) %DEADLINE(When) %TODO(State)"
+#+END:
