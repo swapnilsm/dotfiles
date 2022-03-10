@@ -605,13 +605,13 @@ change =org-directory=. It must be set before org loads!
     (org-roam-capture-templates
      '(("d" "default" plain "%?"
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                           "#+TITLE: ${title}\n#+FILETAGS: \n")
+                           "#+TITLE: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+FILETAGS: \n")
         :unnarrowed t)
        ("i" "interview notes" plain (file "~/roam-files/templates/interview-note-template.org")
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+OPTIONS: TOC:nil\n#+STARTUP: overview\n#+FILETAGS: Interview\n")
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+OPTIONS: toc:nil ^:nil\n#+STARTUP: overview\n#+FILETAGS: Interview\n")
         :unnarrowed t)
        ("p" "project" plain (file "~/roam-files/templates/project-note-template.org")
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+OPTIONS: TOC:nil\n#+FILETAGS: Project\n"))
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+FILETAGS: Project\n"))
        )
      )
     )
