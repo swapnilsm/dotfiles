@@ -347,15 +347,12 @@ change =org-directory=. It must be set before org loads!
         org-agenda-breadcrumbs-separator " > "
         org-agenda-current-time-string "            "
         org-agenda-prefix-format
-        '((agenda . " %i %?-12t %s %50b")
+        '((agenda . " %i %?-12t %s %50(sm-get-short-prefix) > ")
           (todo . " %i %?-12t %11s %50b")
           (tags . " %i %?-12t % s %50(sm-get-short-prefix) > ")
           (search . " %i %?-12t % s %50(sm-get-short-prefix) > "))
         org-agenda-span 1))
 #+END_SRC
-
-#+RESULTS:
-: 1
 
 *** Custom commands
 ***** By assignee
@@ -478,8 +475,6 @@ change =org-directory=. It must be set before org loads!
         (:prefix "i"
          :desc "Insert current timer" "t" #'sm-insert-current-org-timer)))
 #+END_SRC
-
-#+RESULTS:
 
 ** INSERT CURRENT DATE
 #+BEGIN_SRC elisp
