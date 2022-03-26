@@ -5,6 +5,6 @@
 # condition: t
 # --
 
-* Action items [[[elisp:(org-update-all-dblocks)][Update]
+* Action items [[[elisp:(org-update-all-dblocks)][Update]]]
 #+BEGIN: columnview :id global :match "/TODO|DONE" :format "%ITEM(What) %TAGS(Who) %DEADLINE(When) %TODO(State)"
 #+END:

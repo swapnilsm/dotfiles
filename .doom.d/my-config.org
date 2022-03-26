@@ -490,19 +490,21 @@ change =org-directory=. It must be set before org loads!
 ;; (use-package! org-gcal
 ;;   :after org-agenda
 ;;   :init
-;;   (setq org-gcal-client-id "<client-id>"
+;;   (setq org-gcal-client-id "client-id"
 ;;         org-gcal-client-secret "client-secret"
 ;;         org-gcal-file-alist '(
-;;                               ("swapnilsm@google.com" . "~/work-sync/org-files/schedule/schedule.org")
+;;                               ("swapnilsm@google.com" . "~/schedule.org")
 ;;                               ))
 ;;   ;; (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-fetch)))
-;;   (run-with-idle-timer 1800 t (lambda () (org-gcal-fetch)))
+;;   ;; (run-with-idle-timer 1800 t (lambda () (org-gcal-fetch)))
 ;;   )
 #+END_SRC
 ** ORG PANDOC IMPORT
+*** IMPORT
 #+BEGIN_SRC elisp
 (use-package! org-pandoc-import :after org)
 #+END_SRC
+
 ** AUTO TANGLE
 #+BEGIN_SRC elisp
 ;; Since we don't want to disable org-confirm-babel-evaluate all
