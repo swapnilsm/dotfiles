@@ -73,3 +73,5 @@
 (package! org-roam-ui)
 (package! ox-gfm)
 (package! org-ql)
+(package! ox-pandoc
+  :recipe (:repo "swapnilsm/ox-pandoc") :pin "9691f4bd497cc53a52ce4e810a364cbc84592836")
