@@ -318,10 +318,10 @@ change =org-directory=. It must be set before org loads!
 
 (defun sm/refresh-agenda-list ()
   (interactive)
-  (setq org-agenda-files (append (sm/get-org-roam-agenda-files) (sm-get-personal-agenda-files) (sm-get-work-agenda-files)))
+  (setq org-agenda-files (delete-dups (append (sm/get-org-roam-agenda-files) (sm-get-personal-agenda-files) (sm-get-work-agenda-files))))
   (message "Refreshed org-agenda-files"))
-
 #+END_SRC
+
 **** Get org-roam projects
 #+BEGIN_SRC elisp
 (defun sm/org-roam-find-project ()
@@ -613,6 +613,9 @@ change =org-directory=. It must be set before org loads!
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+OPTIONS: toc:nil ^:nil\n#+STARTUP: overview\n#+FILETAGS: Interview\n")
         :unnarrowed t)
        ("d" "design" plain (file "~/roam-files/templates/design-template.org")
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+        :unnarrowed t)
+       ("p" "proposal" plain (file "~/roam-files/templates/proposal-template.org")
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
         :unnarrowed t)
        ("P" "project" plain (file "~/roam-files/templates/project-note-template.org")
