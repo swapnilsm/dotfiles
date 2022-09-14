@@ -67,11 +67,17 @@
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 (package! protobuf-mode)
-;; (package! google :built-in 'prefer)
-;; (package! gogolink :built-in 'prefer)
+(package! google :built-in 'prefer)
+(package! gogolink :built-in 'prefer)
+(package! browse-url :built-in 'prefer)
 (unpin! org-roam)
 (package! org-roam-ui)
 (package! ox-gfm)
 (package! org-ql)
 (package! ox-pandoc
   :recipe (:repo "swapnilsm/ox-pandoc") :pin "9691f4bd497cc53a52ce4e810a364cbc84592836")
+(package! request
+  :recipe (:repo "tkf/emacs-request"))
+(package! org-present)
+(package! visual-fill-column)
+(package! mixed-pitch)

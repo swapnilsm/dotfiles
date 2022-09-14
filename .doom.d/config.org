@@ -2,7 +2,7 @@
 #+AUTHOR: Swapnil Mahajan (swapnilsm@)
 #+STARTUP: SHOWEVERYTHING
 #+OPTIONS: TOC:2
-#+PROPERTY: header-args:elisp :tangle ~/.doom.d/config.el
+#+PROPERTY: header-args:elisp
 
 * TABLE OF CONTENTS                                                                                                :TOC:
 - [[#help][HELP]]
@@ -32,6 +32,7 @@
   - [[#org-pandoc-import][ORG PANDOC IMPORT]]
   - [[#auto-tangle][AUTO TANGLE]]
   - [[#presentation][PRESENTATION]]
+  - [[#superstar][SUPERSTAR]]
 - [[#expand-region][EXPAND REGION]]
 - [[#beacon][BEACON]]
 - [[#dimmer][DIMMER]]
@@ -48,6 +49,7 @@
 - [[#undo-tree][UNDO TREE]]
 - [[#vterm][VTERM]]
 - [[#company][COMPANY]]
+- [[#request][REQUEST]]
 
 * HELP
 
@@ -96,23 +98,36 @@ are the three important ones:
 
 They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 font string. You generally only need these two:
+
 #+BEGIN_SRC elisp
 ;; (setq doom-font (font-spec :family "Meslo LG L for Powerline" :size 15)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 
 ;; (setq doom-font (font-spec :family "Monaco" :size 13))
-(setq ns-use-thin-smoothing t)
+;; (setq ns-use-thin-smoothing t)
 ;; (setq ns-antialias-text t)
 ;; (setq doom-font (font-spec :family "Iosevka Aile" :size 15 :weight 'light))
-;; (setq doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 15 :weight 'light))
+;; (setq doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 15 :weight 'regular))
 ;; (setq doom-font (font-spec :family "Fira Code" :size 15 :weight 'light))
 ;; (setq doom-variable-pitch-font (font-spec :family "Fira Code" :size 15 :weight 'light))
 ;; (setq doom-font (font-spec :family "Source Code Pro" :size 15 :weight 'light))
 ;; (setq doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 15 :weight 'light))
 ;; (setq doom-font (font-spec :family "VictorMono Nerd Font Mono" :size 15 :weight 'regular))
 ;; (setq doom-variable-pitch-font (font-spec :family "VictorMono Nerd Font Mono" :size 15 :weight 'regular))
-(setq doom-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
-(setq doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
+;; (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
+;; (setq doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
+(setq doom-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'regular))
+;; (setq doom-variable-pitch-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'regular))
+(setq doom-variable-pitch-font (font-spec :family "Google Sans" :weight 'regular))
+#+END_SRC
+
+Use variable pitch font for text and fixed pitch font for code blocks
+#+BEGIN_SRC elisp
+(use-package! mixed-pitch
+  :hook (text-mode . mixed-pitch-mode)
+  :config
+  (setq mixed-pitch-set-height t)
+  (set-face-attribute 'variable-pitch nil :height 1.1))
 #+END_SRC
 
 ** THEME
@@ -137,7 +152,7 @@ Update the normal ASCII splash image on every startup
 This determines the style of line numbers in effect. If set to =nil=, line
 numbers are disabled. For relative line numbers, set this to =relative=.
 #+BEGIN_SRC elisp
-(setq display-line-numbers-type nil)
+(setq display-line-numbers-type 'relative)
 #+END_SRC
 
 Start Emacs in maximized mode
@@ -149,11 +164,6 @@ Ivy frame position
 #+BEGIN_SRC elisp
 ;; (after! ivy-posframe
 ;;   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-top-center))))
-#+END_SRC
-
-Display relative line numbers
-#+BEGIN_SRC elisp
-(setq display-line-numbers-type 'relative)
 #+END_SRC
 
 Truncate file name displayed in the modeline to truncate all except the project name & file name
@@ -198,16 +208,18 @@ change =org-directory=. It must be set before org loads!
                    :headline "Tasks"
                    :prepend t
                    :template ("* TODO Interview %^{Name}%? [[[%^{My gHire Link}][My gHire]]]"
-                              "DEADLINE: %^{Date}t")))))))
+                              "DEADLINE: %^{Date}t"))
+                  ("Good read" :keys "r"
+                   :file "~/roam-files/20220725134226-good_reads.org"
+                   :headline "Good Reads"
+                   :prepend t
+                   :template ("* TODO [[%c][%^{Title}]]")))))))
 #+END_SRC
 
 ** PREVIEW
 #+BEGIN_SRC elisp
 (after! org
-  (use-package! ox-gfm)
-  (map! :localleader
-        :map org-mode-map
-        :desc "preview" "p" #'grip-restart-preview))
+  (use-package! ox-gfm))
 #+END_SRC
 ** ORG QL
 #+BEGIN_SRC elisp
@@ -506,22 +518,88 @@ change =org-directory=. It must be set before org loads!
 #+END_SRC
 
 ** AUTO TANGLE
+This is not required anymore as doom provides config/literate module.
 #+BEGIN_SRC elisp
 ;; Since we don't want to disable org-confirm-babel-evaluate all
 ;; of the time, do it around the after-save-hook
-(defun sm/org-babel-tangle-dont-ask ()
-  ;; Dynamic scoping to the rescue
-  (let ((org-confirm-babel-evaluate nil))
-    (org-babel-tangle)))
+;; (defun sm/org-babel-tangle-dont-ask ()
+;;   ;; Dynamic scoping to the rescue
+;;   (let ((org-confirm-babel-evaluate nil))
+;;     (org-babel-tangle)))
 
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'sm/org-babel-tangle-dont-ask
-                                              'run-at-end 'only-in-org-mode)))
-
+;; (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'sm/org-babel-tangle-dont-ask
+;;                                               'run-at-end 'only-in-org-mode)))
 #+END_SRC
 ** PRESENTATION
+Set Org Reveal theme to "league"
 #+BEGIN_SRC elisp
 (after! org-re-reveal
   (setq org-re-reveal-theme "league"))
+#+END_SRC
+
+#+BEGIN_SRC elisp
+(defun sm-org-present-start ()
+  ;; Center the presentation and wrap lines
+  (setq visual-fill-column-center-text t
+        visual-fill-column-width 200)
+  (visual-fill-column-mode 1)
+  (visual-line-mode 1)
+  (setq doom--line-number-style nil)
+  (setq display-line-numbers nil))
+
+(defun sm-org-present-end ()
+  ;; Stop centering and wrapping lines
+  (visual-fill-column-mode 0)
+  (visual-line-mode 0)
+  (setq doom--line-number-style 'relative)
+  (setq display-line-numbers 'relative))
+
+(defun sm-org-present-prepare-slide (buffer-name heading)
+  ;; Show headlines only
+  (org-overview)
+  ;; Expand first headline
+  (org-show-entry)
+  ;; Fold the children
+  (org-show-children))
+
+;; Install visual-fill-column for centered text
+(use-package! visual-fill-column
+  :after org
+  :config
+  ;; Configure fill width
+  (setq visual-fill-column-width 200
+        visual-fill-column-center-text 1))
+
+(use-package! org-present
+  :after org
+  :commands (org-present)
+  :config
+  ;; Override keys from evil-collections to sensible defaults
+  (map! :map org-present-mode-keymap
+        :n "j" #'evil-next-line
+        :n "k" #'evil-previous-line
+        :n "q" #'org-present-quit
+        :n "zi" #'org-toggle-inline-images
+        :n "zo" #'+org/open-fold)
+
+  (map! :localleader
+         :map org-mode-map
+         :desc "present" "p" #'org-present)
+  (add-hook! 'org-present-mode-hook 'sm-org-present-start)
+  (add-hook! 'org-present-mode-quit-hook 'sm-org-present-end)
+  (add-hook! 'org-present-after-navigate-functions 'sm-org-present-prepare-slide))
+#+END_SRC
+
+#+RESULTS:
+: t
+
+** SUPERSTAR
+Set custom headline bullets
+#+BEGIN_SRC elisp
+(after! org-superstar
+  :config
+  (setq org-superstar-headline-bullets-list '("☯" "✸" "✿" "✜")))
+
 #+END_SRC
 
 * EXPAND REGION
@@ -583,12 +661,18 @@ change =org-directory=. It must be set before org loads!
 #+END_SRC
 * Google
 #+BEGIN_SRC elisp
-;; (use-package! google)
-;; (use-package! gogolink
-;;   :after google
-;;   :hook ((org-mode . gogolink-mode)
-;;          (org-agenda-mode . gogolink-mode)))
+(use-package! google)
+(use-package! gogolink
+  :after google
+  :hook ((org-mode . gogolink-mode)
+         (org-agenda-mode . gogolink-mode))
+  :config
+  (map! :leader
+        (:prefix "o"
+         :desc "Open Google link in browser" "g" #'gogolink-goto-link-at-point)))
+(use-package! browse-url)
 #+END_SRC
+
 * ORG ROAM
 ** ORG ROAM
 #+BEGIN_SRC elisp
@@ -660,4 +744,8 @@ Introduce delay before dropdown is shown
 (after! company
   :config
   (setq company-idle-delay 1))
+#+END_SRC
+* REQUEST
+#+BEGIN_SRC elisp
+(use-package! request)
 #+END_SRC
