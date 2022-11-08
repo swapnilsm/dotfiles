@@ -67,9 +67,6 @@
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 (package! protobuf-mode)
-(package! google :built-in 'prefer)
-(package! gogolink :built-in 'prefer)
-(package! browse-url :built-in 'prefer)
 (unpin! org-roam)
 (package! org-roam-ui)
 (package! ox-gfm)
@@ -81,3 +78,80 @@
 (package! org-present)
 (package! visual-fill-column)
 (package! mixed-pitch)
+
+;; Google
+(package! google :built-in 'prefer)
+;; (package! gogolink :built-in 'prefer)
+;; (package! browse-url :built-in 'prefer)
+
+;; Basic Google3
+(package! google3 :built-in 'prefer)
+(package! google3-mode :built-in 'prefer)
+
+;; Google3 file handling
+;; (package! citc :built-in 'prefer)
+;; (package! google3-ffap :built-in 'prefer)
+;; (package! ffap-python :recipe (:local-repo "/usr/share/google-emacs/site-lisp/emacs-google-config/devtools/editors/emacs/"))
+(package! rotate-among-files :built-in 'prefer)
+
+;; Reference, Search, Correction and Completion
+(package! cs :built-in 'prefer)
+(package! ivy-cs :built-in 'prefer)
+;; (package! google3-quickrun :built-in 'prefer)
+(package! google-flymake :built-in 'prefer)
+(package! google3-eglot :built-in 'prefer)
+;; (package! google-tricorder :recipe (:local-repo "/usr/share/google-emacs/site-lisp/emacs-google-config/devtools/editors/emacs/tricorder"))
+;; (package! google-findings :built-in 'prefer)
+
+;; VC/Fig
+(package! vc-hgcmd)
+(package! vc-defer :recipe (:host github :repo "google/vc-defer"))
+
+;; BUILD stuff
+(package! google3-build :built-in 'prefer)
+(package! google3-build-mode :built-in 'prefer)
+(package! google3-build-capf :built-in 'prefer)
+(package! google3-build-cleaner :built-in 'prefer)
+(package! iblaze-latest :recipe (:local-repo "~/.emacs-packages/iblaze-latest/"))
+
+;; Imports and includes
+(package! google-imports :built-in 'prefer)
+(package! google-imports-iwyu :built-in 'prefer)
+;; (package! clang-include-fixer :recipe (:local-repo "/usr/share/google-emacs/site-lisp/emacs-google-config/third_party/llvm/llvm-project/clang-tools-extra/clang-include-fixer/tool"))
+(package! google-cc-add-using :built-in 'prefer)
+(package! google-trailing-whitespace :built-in 'prefer)
+(package! java-imports :pin "e96ff44ed48b362ab6227b8b802b84d84f78bcaa")
+
+;; Coding help aka snippets
+(package! google-yasnippets :built-in 'prefer)
+
+;; Protobuf
+(package! protobuffer :built-in 'prefer)
+
+;; CC
+(package! google-cc-extras :built-in 'prefer)
+(package! google-diformat :built-in 'prefer)
+
+;; Python
+(package! google-pyformat :built-in 'prefer)
+
+;; Java
+;; (package! google-java-format :built-in 'prefer)
+
+;; Fig
+;; (package! fig :recipe (:local-repo "/usr/share/google-emacs/site-lisp/emacs-google-config/devtools/editors/emacs/fig"))
+;; (package! fig)
+
+;; EDiff
+(package! google-ediff :built-in 'prefer)
+
+;; Links & Documentation
+(package! gogolink :built-in 'prefer)
+(package! google-engdoc :built-in 'prefer)
+
+;; Soy mode
+(package! soy-mode :recipe (:host github :repo "toomoresuch/soy-mode"))
+
+;; (package! project :disable)
+;; (package! company-box)
+;; (package! sql-dremel :built-in 'prefer)

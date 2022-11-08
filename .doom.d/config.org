@@ -12,6 +12,7 @@
   - [[#font][FONT]]
   - [[#theme][THEME]]
   - [[#splash-image][SPLASH IMAGE]]
+  - [[#titlebar---version-29][TITLEBAR - Version 29+]]
   - [[#other][OTHER]]
 - [[#org][ORG]]
   - [[#org-directory][ORG DIRECTORY]]
@@ -28,9 +29,9 @@
   - [[#copy-link-at-point][COPY LINK AT POINT]]
   - [[#insert-current-org-timer][INSERT CURRENT ORG TIMER]]
   - [[#insert-current-date][INSERT CURRENT DATE]]
+  - [[#insert-update][INSERT UPDATE]]
   - [[#google-calendar][GOOGLE CALENDAR]]
   - [[#org-pandoc-import][ORG PANDOC IMPORT]]
-  - [[#auto-tangle][AUTO TANGLE]]
   - [[#presentation][PRESENTATION]]
   - [[#superstar][SUPERSTAR]]
 - [[#expand-region][EXPAND REGION]]
@@ -42,7 +43,6 @@
 - [[#python][PYTHON]]
 - [[#command-log-mode][COMMAND LOG MODE]]
 - [[#protobuf-mode][PROTOBUF MODE]]
-- [[#google][Google]]
 - [[#org-roam][ORG ROAM]]
   - [[#org-roam-1][ORG ROAM]]
   - [[#org-roam-ui][ORG ROAM UI]]
@@ -50,6 +50,30 @@
 - [[#vterm][VTERM]]
 - [[#company][COMPANY]]
 - [[#request][REQUEST]]
+- [[#google][GOOGLE]]
+  - [[#google3][GOOGLE3]]
+  - [[#file-handling][FILE HANDLING]]
+  - [[#reference-search-correction-and-completion][REFERENCE, SEARCH, CORRECTION AND COMPLETION]]
+  - [[#fig][FIG]]
+  - [[#build][BUILD]]
+  - [[#imports-and-includes][IMPORTS AND INCLUDES]]
+  - [[#coding-help-aka-snippets][CODING HELP AKA SNIPPETS]]
+  - [[#enable-google3-autogen][ENABLE GOOGLE3 AUTOGEN]]
+  - [[#language][LANGUAGE]]
+  - [[#custom-code][CUSTOM CODE]]
+  - [[#formatting][FORMATTING]]
+  - [[#ediff][EDIFF]]
+  - [[#links--documentation][LINKS & DOCUMENTATION]]
+  - [[#custom-functions][CUSTOM FUNCTIONS]]
+  - [[#hooks][HOOKS]]
+  - [[#necessary-rather-than-using-doom-auto-revert-mode-to-enable-eglot-reconnect][NECESSARY RATHER THAN USING DOOM AUTO-REVERT MODE TO ENABLE EGLOT-RECONNECT.]]
+  - [[#keymap][KEYMAP]]
+  - [[#hacks-1][HACKS]]
+  - [[#speed-up-file-opens][SPEED UP FILE OPENS]]
+  - [[#expand-region-1][EXPAND REGION]]
+  - [[#projectile][PROJECTILE]]
+  - [[#datetimecalendar][DATE/TIME/CALENDAR]]
+  - [[#test][Test]]
 
 * HELP
 
@@ -117,8 +141,8 @@ font string. You generally only need these two:
 ;; (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
 ;; (setq doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
 (setq doom-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'regular))
-;; (setq doom-variable-pitch-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'regular))
-(setq doom-variable-pitch-font (font-spec :family "Google Sans" :weight 'regular))
+(setq doom-variable-pitch-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'light))
+;; (setq doom-variable-pitch-font (font-spec :family "Google Sans" :weight 'regular))
 #+END_SRC
 
 Use variable pitch font for text and fixed pitch font for code blocks
@@ -146,6 +170,12 @@ available. You can either set =doom-theme= or manually load a theme with the
 Update the normal ASCII splash image on every startup
 #+BEGIN_SRC elisp
 (setq fancy-splash-image "~/dotfiles/.doom.d/pictures/iron-man-splash.png")
+#+END_SRC
+
+** TITLEBAR - Version 29+
+Toggle title bar and rounded corners
+#+BEGIN_SRC elisp
+(add-to-list 'default-frame-alist '(undecorated-round . t))
 #+END_SRC
 
 ** OTHER
@@ -199,7 +229,7 @@ change =org-directory=. It must be set before org loads!
     :config
     (setq org-capture-templates
           (doct '(("Todo" :keys "t"
-                   :file "todo.org"
+                   :file "~/roam-files/20221104172849-todo.org"
                    :headline "Inbox"
                    :prepend t
                    :template ("* TODO %^{Description} [[%c][%?]]"))
@@ -417,14 +447,14 @@ change =org-directory=. It must be set before org loads!
                                  (:name "Unplanned"
                                   :deadline nil
                                   :order 9)
-                                 (:discard (:anything t))
-                                 ))
-                              ))
-                  (todo "" ((org-agenda-overriding-header "")
-                            (org-super-agenda-groups '(
-                                                       (:name "Unplanned"
-                                                        :deadline nil
-                                                        :discard (:anything t))))))))))
+                                 (:discard (:anything t))))))))))
+                  ;; (todo "" ((org-agenda-overriding-header "")
+                  ;;           (org-super-agenda-groups '(
+                  ;;                                      (:name "Unplanned"
+                  ;;                                       :deadline nil
+                  ;;                                       :discard (:anything t))))))
+
+
 #+END_SRC
 
 
@@ -490,13 +520,30 @@ change =org-directory=. It must be set before org loads!
 
 ** INSERT CURRENT DATE
 #+BEGIN_SRC elisp
+(defun sm-current-date ()
+  (format-time-string "%B %e, %Y"))
+
 (defun sm-insert-current-date () (interactive)
-       (insert (format-time-string "%B %e, %Y")))
+       (insert (sm-current-date)))
+
 (after! org
- (map! :leader
-      (:prefix "i"
-       :desc "Insert current date" "d" #'sm-insert-current-date)))
+  (map! :leader
+         (:prefix "i"
+          :desc "Insert current date" "d" #'sm-insert-current-date)))
 #+END_SRC
+
+** INSERT UPDATE
+#+BEGIN_SRC elisp
+(defun sm/insert-update ()
+  "Insert a new line just after the properties drawer of current heading starting with today's date."
+  (interactive)
+  (org-end-of-meta-data t)
+  (newline)
+  (previous-line)
+  (insert "- [" (sm-current-date) "] ")
+  (evil-append 1))
+#+END_SRC
+
 ** GOOGLE CALENDAR
 #+BEGIN_SRC elisp
 ;; (use-package! org-gcal
@@ -517,19 +564,6 @@ change =org-directory=. It must be set before org loads!
 (use-package! org-pandoc-import :after org)
 #+END_SRC
 
-** AUTO TANGLE
-This is not required anymore as doom provides config/literate module.
-#+BEGIN_SRC elisp
-;; Since we don't want to disable org-confirm-babel-evaluate all
-;; of the time, do it around the after-save-hook
-;; (defun sm/org-babel-tangle-dont-ask ()
-;;   ;; Dynamic scoping to the rescue
-;;   (let ((org-confirm-babel-evaluate nil))
-;;     (org-babel-tangle)))
-
-;; (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'sm/org-babel-tangle-dont-ask
-;;                                               'run-at-end 'only-in-org-mode)))
-#+END_SRC
 ** PRESENTATION
 Set Org Reveal theme to "league"
 #+BEGIN_SRC elisp
@@ -659,20 +693,6 @@ Set custom headline bullets
 #+BEGIN_SRC elisp
 ;; (use-package! protobuf-mode)
 #+END_SRC
-* Google
-#+BEGIN_SRC elisp
-(use-package! google)
-(use-package! gogolink
-  :after google
-  :hook ((org-mode . gogolink-mode)
-         (org-agenda-mode . gogolink-mode))
-  :config
-  (map! :leader
-        (:prefix "o"
-         :desc "Open Google link in browser" "g" #'gogolink-goto-link-at-point)))
-(use-package! browse-url)
-#+END_SRC
-
 * ORG ROAM
 ** ORG ROAM
 #+BEGIN_SRC elisp
@@ -703,7 +723,7 @@ Set custom headline bullets
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
         :unnarrowed t)
        ("P" "project" plain (file "~/roam-files/templates/project-note-template.org")
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+FILETAGS: Project\n"))
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+SHORT: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+FILETAGS: Project\n"))
        )
      )
     )
@@ -748,4 +768,500 @@ Introduce delay before dropdown is shown
 * REQUEST
 #+BEGIN_SRC elisp
 (use-package! request)
+#+END_SRC
+* GOOGLE
+#+BEGIN_SRC elisp
+(use-package! google)
+#+END_SRC
+
+** GOOGLE3
+
+#+BEGIN_SRC elisp
+(use-package! google3)
+(use-package! google3-mode)
+#+END_SRC
+
+** FILE HANDLING
+#+BEGIN_SRC elisp
+(use-package! cs)
+
+(use-package! google3-ffap
+  :config
+  (add-to-list 'ffap-alist (google3-ffap-alist-additions)))
+(use-package! ffap-python
+  :after (google3-ffap python)
+  )
+(use-package! rotate-among-files
+  :config
+  (setq google-rotate-directories '("public" "proto" "internal" "java" "javatests" "testdata")))
+#+END_SRC
+
+** REFERENCE, SEARCH, CORRECTION AND COMPLETION
+
+#+BEGIN_SRC elisp
+(use-package! ivy-cs)
+;; (use-package! google3-quickrun)
+(use-package! google-flymake
+  :config
+  (remove-hook 'flymake-diagnostic-functions
+               'flymake-proc-legacy-flymake))
+
+(use-package! google3-eglot
+  :after google
+  :init
+  (setq google3-eglot-ciderlsp-binary "~/bin/ciderlsp")
+  (setq eglot-connect-timeout 30)
+  :config
+  (setq eglot-sync-connect 0)
+  (google3-eglot-setup)
+  (defun eglot--path-to-uri (path)
+    "URIfy PATH."
+    (url-hexify-string
+     (concat "file://" (if (eq system-type 'windows-nt) "/")
+           (string-remove-prefix "/Volumes" (file-truename path)))
+     url-path-allowed-chars))
+  (setq eldoc-message-commands (make-vector
+                                eldoc-message-commands-table-size 0))
+  (define-key eglot-mode-map [remap display-local-help] nil))
+
+
+;; (cl-defun swapnilsm-connect-remote-ciderlsp (&optional (port 3845))
+;;   "Launch eglot connected to a local port, which forwards to
+;;   CiderLSP on a remote machine. See go/emacs-remote-ciderlsp for
+;;   setup details."
+
+;;   (interactive)
+
+;;   ;; BEGIN: copied from //depot/google3/devtools/editors/emacs/google3-eglot.el
+
+;;   ;; The legacy Flymake ‘proc’ backend won’t be useful in Google3 and will
+;;   ;; interfere with Eglot.
+;;   (setq-local flymake-proc-allowed-file-name-masks nil)
+;;   ;; Company-clang conflicts with company completion from Eglot.
+;;   ;; Disable it to avoid the issues.
+;;   (setq-local company-backends
+;;               (delq 'company-clang company-backends))
+;;   ;; Make sure that ciderlsp specific capabilities won't trigger eglot to
+;;   ;; emit errors.
+;;   (setq-local eglot-strict-mode
+;;               (remq 'disallow-non-standard-keys eglot-strict-mode))
+;;   ;; `yas-minor-mode' is required for snippet based completion.
+;;   (yas-minor-mode 1)
+
+;;   ;; END: copied from //depot/google3/devtools/editors/emacs/google3-eglot.el
+
+;;   ;; Eglot theoretically supports connecting to language servers over
+;;   ;; TCP by just configuring `eglot-server-programs'. In practice this
+;;   ;; doesn't work because `eglot--guess-contact' doesn't support it,
+;;   ;; but is invoked by `eglot-ensure'.
+;;   ;;
+;;   ;; To work around this, we invoke eglot manually:
+;;   (let* ((triplet (eglot--lookup-mode major-mode))
+;;          (managed-modes (car triplet))
+;;          (language-id (cadr triplet))
+;;          (eglot-args (list managed-modes
+;;                           (eglot--current-project)
+;;                           'eglot-lsp-server
+;;                           `("localhost" ,port)
+;;                           language-id)))
+;;     (eglot--when-live-buffer (current-buffer)
+;;       (unless eglot--managed-mode
+;;         (apply #'eglot--connect eglot-args)))))
+;; (use-package! google-tricorder)
+;; (use-package! google-findings)
+#+END_SRC
+
+** FIG
+
+#+BEGIN_SRC elisp
+(setq vc-hg-program "chg")
+(setq fig--hg-executable "chg")
+(setq fig-hg-executable "chg")
+(use-package! vc-hgcmd
+  :config (setq vc-handled-backends '(Hgcmd)))
+(use-package! vc-defer
+  :config
+  (add-to-list 'vc-defer-backends 'Hg)
+  (add-to-list 'vc-defer-backends 'Hgcmd)
+  (add-to-list 'vc-defer-backends 'Fig)
+  (vc-defer-mode))
+
+#+END_SRC
+
+** BUILD
+
+#+BEGIN_SRC elisp
+(use-package! google3-build
+  :config
+  (setq google3-build-target-method 'blaze))
+(use-package! google3-build-mode
+  :mode "\\BUILD$")
+(use-package! google3-build-cleaner)
+(use-package! google3-build-capf
+ :config
+ (google3-build-capf-enable-completions))
+(use-package! iblaze-latest
+  :after google3-build
+  :config
+  ;; (setq google3-build-command "blaze")
+  (setq google3-build-command "iblaze -iblaze_nocitc_watch_all -iblaze_interrupt_on_change")
+  (add-hook 'compilation-mode-hook 'iblaze-latest-mode)
+  (setq compilation-scroll-output t))
+;; (use-package! google3-build-mode-company
+;;   :config
+;;   (add-to-list 'company-backends 'company-capf))
+#+END_SRC
+
+** IMPORTS AND INCLUDES
+
+#+BEGIN_SRC elisp
+(use-package! google-imports)
+(use-package! google-imports-iwyu)
+(use-package! clang-include-fixer)
+(use-package! google-cc-add-using)
+(use-package! google-trailing-whitespace)
+#+END_SRC
+
+** CODING HELP AKA SNIPPETS
+
+#+BEGIN_SRC elisp
+;; (use-package! google-yasnippets
+;;   :config
+;;   (google-yasnippets-load))
+;; (yas-global-mode 1)
+;; (push "~/doom.emacs.d/snippets" yas-snippet-dirs)
+#+END_SRC
+
+** ENABLE GOOGLE3 AUTOGEN
+#+BEGIN_SRC elisp
+;; (use-package! google-codemaker
+;;   :config (google-codemaker-auto-mode 1))
+#+END_SRC
+
+** LANGUAGE
+*** PROTOBUF
+
+#+BEGIN_SRC elisp
+(use-package! protobuf-mode)
+(use-package! protobuffer
+  :config (setq protobuffer-format-before-save t))
+#+END_SRC
+
+*** CC
+
+#+BEGIN_SRC elisp
+(use-package! google-cc-extras)
+(use-package! google-diformat)
+#+END_SRC
+
+*** DREMEL
+#+BEGIN_SRC elisp
+;; (use-package! sql-dremel)
+#+END_SRC
+*** FIG
+
+#+BEGIN_SRC elisp
+(use-package! fig
+  :config
+  (map! :map fig-status-mode-map
+        "j" #'magit-section-forward
+        "k" #'magit-section-backward))
+#+END_SRC
+
+*** JAVA
+
+#+BEGIN_SRC elisp
+(use-package! google-java-format)
+(use-package! java-imports
+  :config
+  (setq java-imports-save-buffer-after-import-added nil)
+  (add-hook! 'java-mode-hook 'java-imports-scan-file))
+#+END_SRC
+
+*** PYTHON
+
+#+BEGIN_SRC elisp
+(use-package! google-pyformat)
+#+END_SRC
+
+*** SOY
+
+#+BEGIN_SRC elisp
+(use-package! soy-mode)
+#+END_SRC
+
+*** SHX
+#+BEGIN_SRC elisp
+;; (use-package! shx)
+#+END_SRC
+
+*** SQL
+#+begin_src elisp
+;; (use-package! sql-dremel)
+#+end_src
+
+*** STYLE
+
+#+BEGIN_SRC elisp
+(setq frame-title-format
+  '("" (:eval (save-match-data
+                (if (string-match
+                     "^/google/src/cloud/[^/]+/\\([^/]+\\)/"
+                     default-directory)
+                    (match-string 1 default-directory)
+                  "%b")))))
+#+END_SRC
+
+** CUSTOM CODE
+*** EDIFF
+
+ediff press d to add both variants
+#+BEGIN_SRC elisp
+(defun ediff-copy-both-to-C ()
+  (interactive)
+  (ediff-copy-diff ediff-current-difference nil 'C nil
+                   (concat
+                    (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
+                    (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+(defun add-d-to-ediff-mode-map () (define-key ediff-mode-map "d" 'ediff-copy-both-to-C))
+#+END_SRC
+Don't let ediff open a new frame
+#+BEGIN_SRC elisp
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+END_SRC
+
+** FORMATTING
+#+BEGIN_SRC elisp
+(set-formatter! 'google-diformat-clang-formatter #'google-diformat-clang-format-changed :modes '(c-mode c++-mode))
+(set-formatter! 'google-diformat-python-formatter #'google-diformat-pyformat-changed :modes '((python-mode (not (eq major-mode 'google3-build-mode)))))
+(set-formatter! 'google-diformat-java-formatter #'google-diformat-google-java-format-changed :modes '(java-mode))
+(set-formatter! 'google-markdown-formatter #'google-mdformat :modes '(markdown-mode))
+(setq +format-on-save-enabled-modes '(c-mode c++-mode python-mode typescript typescript-mode markdown-mode))
+#+END_SRC
+
+** EDIFF
+
+#+BEGIN_SRC elisp
+(use-package! google-ediff)
+#+END_SRC
+
+** LINKS & DOCUMENTATION
+
+#+BEGIN_SRC elisp
+(use-package! gogolink
+  :after google
+  :hook ((org-mode . gogolink-mode)
+         (org-agenda-mode . gogolink-mode))
+  :config
+  (map! :leader
+        (:prefix "o"
+         :desc "Open Google link in browser" "g" #'gogolink-goto-link-at-point)))
+(use-package! browse-url)
+(use-package! google-engdoc
+  :init (google-engdoc-init))
+#+END_SRC
+
+** CUSTOM FUNCTIONS
+*** Insert bug number from buganizer
+#+BEGIN_SRC elisp
+(defvar swapnilsm/insert-bug-cache nil)
+(defun swapnilsm/clear-bug-cache ()
+    "Clear bug cache"
+  (interactive)
+  (setq swapnilsm/insert-bug-cache nil))
+(defun swapnilsm/insert-bug (&optional refresh)
+  "Insert a bug number using Ivy and REFRESH cache if provided."
+  (interactive "P")
+  (let* ((buglist (or (and (not refresh) swapnilsm/insert-bug-cache)
+                      (setq swapnilsm/insert-bug-cache
+                            (cdr (process-lines "bugged" "search")))))
+         (b (ivy-read "Bug: " buglist)))
+    (insert (car (s-split-up-to "\s" b 1)))))
+#+END_SRC
+*** Safe shutdown
+#+BEGIN_SRC elisp
+(defun server-shutdown ()
+  "Save buffers, Quit, and Shutdown (kill) server"
+  (interactive)
+  (save-some-buffers)
+  (kill-emacs))
+#+END_SRC
+*** Fig - sync all
+#+BEGIN_SRC elisp
+(defun swapnilsm/fig-sync-all ()
+  (interactive)
+  (fig--hg-run-with-editor "sync" `(,@(fig--merge-tool-args) "--all")))
+#+END_SRC
+*** CS-Browse-Copy
+#+BEGIN_SRC elisp
+(defun swapnilsm/cs-browse-copy ()
+  (interactive)
+  (cs-browse 1))
+#+END_SRC
+
+*** Workspace build cleaner
+#+BEGIN_SRC elisp
+(defun swapnilsm/google3-build-cleaner-workspace ()
+  (interactive)
+  (google3-build-cleaner--run "-c=default"))
+#+END_SRC
+
+** HOOKS
+#+BEGIN_SRC elisp
+(add-hook! c++-mode
+  (add-hook! 'before-save-hook :local :append #'google-clang-format-file nil :local))
+(add-hook! typescript-mode
+    (add-hook! 'before-save-hook :local :append #'google-diformat-clang-format-changed))
+(add-hook! google3-mode 'subword-mode)
+(add-hook! markdown-mode
+  (lambda ()
+    (unless (derived-mode-p 'fig-commit-mode)
+      (add-hook 'before-save-hook #'google-mdformat-before-save nil t))))
+(add-hook! python-mode
+  (add-hook! 'before-save-hook :local :append
+   (lambda ()
+    (unless (eq major-mode 'google3-build-mode)
+      (add-hook 'before-save-hook #'google-pyformat nil t)))))
+;; (add-hook! 'java-mode-hook 'java-imports-scan-file)
+;; (add-hook! java-mode
+;;  (add-hook! 'before-save-hook :local :append #'google-java-format-buffer nil t))
+;; (add-hook! eglot--managed-mode
+;;   (add-hook! 'after-revert-hook :local :append #'eglot-reconnect))
+;; (add-hook! 'after-revert-hook :append #'eglot-reconnect)
+(add-hook! 'ediff-keymap-setup-hook :append #'add-d-to-ediff-mode-map)
+(add-hook! 'after-init-hook :append #'global-company-mode)
+(global-set-key (kbd "<f5>") #'company-complete)
+#+END_SRC
+** NECESSARY RATHER THAN USING DOOM AUTO-REVERT MODE TO ENABLE EGLOT-RECONNECT.
+#+BEGIN_SRC elisp
+(global-auto-revert-mode t)
+#+END_SRC
+** KEYMAP
+#+BEGIN_SRC elisp
+(map!
+ (:leader
+   :desc "" :nv "r" nil  ;; Unset reload bindings
+   (:prefix "q"
+     :desc "Kill emacs, save buffers" :nv "k" #'server-shutdown)
+   (:prefix ("c" . "code")
+     :desc "help at point"           :nv "h" #'eldoc-display-in-buffer
+     :desc "format region or buffer" :nv "f" #'google3-format-region-or-buffer
+     :desc "grab import"             :n  "g" #'google-imports-grab-import
+     :desc "add grabbed imports"     :n  "G" #'google-imports-add-grabbed-imports
+     :desc "add imports from prompt" :n  "I" #'google-imports-add-import-from-prompt
+     :desc "import usingjava-imports" :n  "i" #'java-imports-add-import-dwim
+     :desc "lint"                    :nv "l" #'google-lint
+     :desc "list issues"             :n  "X" #'flymake-show-buffer-diagnostics
+     :desc "fixits"                  :n  "x" #'eglot-code-actions
+     ;; :desc "comment-or-un lines"     :nv "l" #'comment-or-uncomment-region
+     :desc "rename symbol at point"  :nv "r" #'eglot-rename
+     :desc "Flymake next error"      :n  "n" #'flymake-goto-next-error
+     :desc "Flymake prev error"      :n  "N" #'flymake-goto-prev-error
+     :desc "Expand region"           :nv "," #'er/expand-region
+     :desc "Expand region"           :nv "<" #'er/contract-region)
+   (:prefix ("d" . "docs")
+     :desc "open engdoc"             :n "o" #'google-engdoc-current-file
+     :desc "update freshdoc"         :n "u" #'google-engdoc-update-fresh)
+   (:prefix "f"
+     ;; :desc "code search"             :n "s" #'csearch
+     :desc "ivyCS"                   :n "i" #'ivy-cs
+     :desc "ivyCS Files"             :n "I" #'ivy-cs-files
+     :desc "rotate-among-files"      :n "r" #'google-rotate-among-files)
+     ;; :desc "create cc Files"         :n "C" #'google-cc-extras-create-files)
+   (:prefix ("v" . "fig")
+    ;; a Adding and removing files
+    ;; b Bookmarking
+    ;; c Committing
+    ;; d Diffing and getting comments
+    ;; f Fixing
+    ;; F Pulling, syncing
+    ;; P Pushing
+    ;; r Rebasing
+    ;; R Mailing
+    ;; t Tagging
+    ;; V Reverting
+    ;; ! Running
+    ;; z Shelving
+     :desc "fig status"              :n "s" #'fig-status
+     :desc "fig fix"                 :n "f" #'fig-fix
+     :desc "sync all"                :n "p" #'swapnilsm/fig-sync-all
+     :desc "committing"              :n "c" #'fig-commit-popup
+     :desc "pushing"                 :n "P" #'fig-push-popup
+     :desc "rebasing"                :n "r" #'fig-rebase-popup
+     :desc "mailing"                 :n "R" #'fig-mail-popup
+     :desc "reverting"               :n "V" #'fig-revert-popup
+     :desc "annotate blame"          :n "b" #'g4-annotate)
+   (:prefix ("r" . "run")
+     :desc "build-cleaner workspace" :n "c" #'swapnilsm/google3-build-cleaner-workspace
+     :desc "build-cleaner"           :n "C" #'google3-build-cleaner-autogen
+     :desc "blaze build"             :n "B" #'google3-build-current-build-rule
+     :desc "blaze build"             :n "b" #'google3-build
+     :desc "blaze test"              :n "t" #'google3-test
+     :desc "iwyu"                    :n "I" #'google-imports-iwyu
+     :desc "build Fix"               :n "f" #'google3-build-fix)
+   (:prefix "s"
+    :desc "Search in CodeSearch"     :n "c" #'ivy-cs)
+   (:prefix "i"
+    :desc "insert bug ID"            :n "b" #'swapnilsm/insert-bug)
+   ))
+
+(map! "M-f" #'swiper)
+#+END_SRC
+
+** HACKS
+#+BEGIN_SRC elisp
+;; (load "/usr/share/google-emacs/site-lisp/emacs-google-config/third_party/elisp/flymake/flymake.el")
+;; (defun project-root (p)  (car (project-roots p)))
+#+END_SRC
+
+** SPEED UP FILE OPENS
+#+BEGIN_SRC elisp
+(remove-hook 'find-file-hook 'p4-update-status)
+(remove-hook 'find-file-hook 'google-load-p4-if-useful-hook)
+#+END_SRC
+
+** EXPAND REGION
+#+BEGIN_SRC elisp
+(map! :nv "C-," #'er/expand-region)
+#+END_SRC
+
+** PROJECTILE
+#+BEGIN_SRC elisp
+(use-package! projectile
+  :hook
+  (after-init . projectile-mode)
+  :init
+  (setq projectile-known-projects-file "~/known-projects-file.eld"
+        projectile-track-known-projects-automatically nil)
+  :config
+  ;; Do not cleanup non-existing projects due to expired gcert
+  (remove-hook! 'kill-emacs-hook #'doom-cleanup-project-cache-h)
+  (add-to-list 'projectile-project-root-files-bottom-up "OWNERS")
+  (setq projectile-hg-command "find . -type f | cut -c3- | tr '\\n' '\\0'"))
+#+END_SRC
+
+** DATE/TIME/CALENDAR
+*** Date
+#+BEGIN_SRC elisp
+(defun swapnilsm/insert-current-date ()
+  (interactive)
+  (insert (calendar-date-string (calendar-current-date) nil 1)))
+(map! :leader
+      (:prefix "i"
+       :desc "Insert current date" :ni "d" #'swapnilsm/insert-current-date))
+#+END_SRC
+*** Time/Timer
+#+BEGIN_SRC elisp
+(map! :leader
+      (:prefix "i"
+       :desc "Insert time elapsed(Timer)" :nvi "t"  #'org-timer))
+#+END_SRC
+
+** Test
+#+BEGIN_SRC elisp
+;; built-in `project' on 26+
+(setq doom-modeline-project-detection 'project)
+;; or `find-in-project' if it's installed
+(setq doom-modeline-project-detection 'ffip)
+(setq find-file-visit-truename nil)
 #+END_SRC
