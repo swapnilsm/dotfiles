@@ -64,6 +64,7 @@
   - [[#formatting][FORMATTING]]
   - [[#ediff][EDIFF]]
   - [[#links--documentation][LINKS & DOCUMENTATION]]
+  - [[#buganizer][Buganizer]]
   - [[#custom-functions][CUSTOM FUNCTIONS]]
   - [[#hooks][HOOKS]]
   - [[#necessary-rather-than-using-doom-auto-revert-mode-to-enable-eglot-reconnect][NECESSARY RATHER THAN USING DOOM AUTO-REVERT MODE TO ENABLE EGLOT-RECONNECT.]]
@@ -723,7 +724,7 @@ Set custom headline bullets
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
         :unnarrowed t)
        ("P" "project" plain (file "~/roam-files/templates/project-note-template.org")
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+SHORT: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+FILETAGS: Project\n"))
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+SHORT: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+STARTUP: show2levels\n#+FILETAGS: Project\n"))
        )
      )
     )
@@ -799,7 +800,11 @@ Introduce delay before dropdown is shown
 ** REFERENCE, SEARCH, CORRECTION AND COMPLETION
 
 #+BEGIN_SRC elisp
-(use-package! ivy-cs)
+(use-package! ivy-cs
+  :config
+  (setq ivy-dynamic-exhibit-delay-ms 250)
+  (setq ivy-cs--extra-args "--nostats --color=never")
+  (setq cs-program "csearch"))
 ;; (use-package! google3-quickrun)
 (use-package! google-flymake
   :config
@@ -958,6 +963,7 @@ Introduce delay before dropdown is shown
 #+BEGIN_SRC elisp
 ;; (use-package! sql-dremel)
 #+END_SRC
+
 *** FIG
 
 #+BEGIN_SRC elisp
@@ -966,7 +972,19 @@ Introduce delay before dropdown is shown
   (map! :map fig-status-mode-map
         "j" #'magit-section-forward
         "k" #'magit-section-backward))
+
+;; go/emacs#support-for-git-with-magit
+(defun sm/google3-early-exit (orig-fun &rest args)
+  (if (string-prefix-p "/google/src/cloud/" (buffer-file-name))
+      (progn (message "sm/google3-early-exit overrode.") nil)
+    (apply orig-fun args)))
+
+(after! magit
+  (advice-add 'magit-toplevel :around #'sm/google3-early-exit)
+  (advice-add 'magit-inside-worktree-p :around #'sm/google3-early-exit))
 #+END_SRC
+
+#+RESULTS:
 
 *** JAVA
 
@@ -1048,6 +1066,10 @@ Don't let ediff open a new frame
 ** LINKS & DOCUMENTATION
 
 #+BEGIN_SRC elisp
+(defun sm/org-dwim-at-point (fn &rest args)
+  ;; First evaluate open-at-points function before running +org/dwim-at-point
+  (unless (run-hook-with-args-until-success 'org-open-at-point-functions)
+    (apply fn args)))
 (use-package! gogolink
   :after google
   :hook ((org-mode . gogolink-mode)
@@ -1055,10 +1077,19 @@ Don't let ediff open a new frame
   :config
   (map! :leader
         (:prefix "o"
-         :desc "Open Google link in browser" "g" #'gogolink-goto-link-at-point)))
+         :desc "Open Google link in browser" "g" #'gogolink-goto-link-at-point))
+  (advice-add '+org/dwim-at-point :around #'sm/org-dwim-at-point))
 (use-package! browse-url)
 (use-package! google-engdoc
   :init (google-engdoc-init))
+#+END_SRC
+
+** Buganizer
+
+#+BEGIN_SRC elisp
+(use-package! org-buganizer
+  :after google
+  :hook ((org-mode . org-buganizer-mode)))
 #+END_SRC
 
 ** CUSTOM FUNCTIONS
