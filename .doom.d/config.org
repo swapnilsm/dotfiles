@@ -800,11 +800,17 @@ Introduce delay before dropdown is shown
 ** REFERENCE, SEARCH, CORRECTION AND COMPLETION
 
 #+BEGIN_SRC elisp
+(defun sm/ivy-cs--full-path (fn &rest args)
+  ;; Replace default google depot path with account-security workspace for eglot to work.
+  (s-replace "/google/src/head/depot" "/google/src/cloud/swapnilsm/account-security" (apply fn args)))
+
 (use-package! ivy-cs
   :config
   (setq ivy-dynamic-exhibit-delay-ms 250)
   (setq ivy-cs--extra-args "--nostats --color=never")
-  (setq cs-program "csearch"))
+  (setq cs-program "csearch")
+  (advice-add 'ivy-cs--full-path :around #'sm/ivy-cs--full-path))
+
 ;; (use-package! google3-quickrun)
 (use-package! google-flymake
   :config
