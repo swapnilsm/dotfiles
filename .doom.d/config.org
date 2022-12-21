@@ -34,6 +34,7 @@
   - [[#org-pandoc-import][ORG PANDOC IMPORT]]
   - [[#presentation][PRESENTATION]]
   - [[#superstar][SUPERSTAR]]
+  - [[#export][EXPORT]]
 - [[#expand-region][EXPAND REGION]]
 - [[#beacon][BEACON]]
 - [[#dimmer][DIMMER]]
@@ -48,6 +49,8 @@
   - [[#org-roam-ui][ORG ROAM UI]]
 - [[#undo-tree][UNDO TREE]]
 - [[#vterm][VTERM]]
+- [[#eshell][ESHELL]]
+- [[#eat][EAT]]
 - [[#company][COMPANY]]
 - [[#request][REQUEST]]
 - [[#google][GOOGLE]]
@@ -74,6 +77,7 @@
   - [[#expand-region-1][EXPAND REGION]]
   - [[#projectile][PROJECTILE]]
   - [[#datetimecalendar][DATE/TIME/CALENDAR]]
+  - [[#pocket-reader][Pocket Reader]]
   - [[#test][Test]]
 
 * HELP
@@ -209,7 +213,7 @@ change =org-directory=. It must be set before org loads!
 #+BEGIN_SRC elisp
 (use-package! org
   :init
-  (setq org-directory "~/org-files/")
+  (setq org-directory "~/roam-files/")
   (setq org-use-property-inheritance t)
   :commands (org-capture org-agenda)
   :config
@@ -220,7 +224,12 @@ change =org-directory=. It must be set before org loads!
   ;;       org-clock-auto-clock-resolution 'when-no-clock-is-running
   ;;       org-clock-history-length 23
   ;;       org-clock-in-resume t)
-  (setq org-tags-column -120))
+  (setq org-tags-column -160))
+
+;; Temporary work-around for searching through the folded area
+(after! evil-search
+  (evil-select-search-module 'evil-search-module 'isearch))
+
 #+END_SRC
 
 ** CAPTURE TEMPLATES
@@ -233,7 +242,7 @@ change =org-directory=. It must be set before org loads!
                    :file "~/roam-files/20221104172849-todo.org"
                    :headline "Inbox"
                    :prepend t
-                   :template ("* TODO %^{Description} [[%c][%?]]"))
+                   :template ("* TODO %^{Description} "))
                   ("Interview" :keys "i"
                    :file "~/roam-files/20210920135449-interviews.org"
                    :headline "Tasks"
@@ -397,6 +406,9 @@ change =org-directory=. It must be set before org loads!
         org-agenda-span 1))
 #+END_SRC
 
+#+RESULTS:
+: 1
+
 *** Custom commands
 ***** By assignee
 #+BEGIN_SRC elisp
@@ -416,21 +428,24 @@ change =org-directory=. It must be set before org loads!
 
 ***** My agenda
 #+BEGIN_SRC elisp
+(setq org-agenda-clockreport-parameter-plist '(:narrow 200 :maxlevel 5 :fileskip0 t :link nil :indent t :tcolumns 2))
 (after! org-agenda
   (add-to-list 'org-agenda-custom-commands
                '("p"  "My agenda"
                  ((agenda "" (
                               (org-agenda-skip-function 'sm-agenda-skip-function)
                               (org-agenda-span 'day)
-                              (org-agenda-clockreport-parameter-plist '(:narrow 80 :maxlevel 5 :fileskip0 t :link t :indent t :tcolumns 2))
                               (org-super-agenda-groups
                                '(
-                                 (:name "Calendar"
+                                 (:name "Log"
+                                  :log t
+                                  :order 5)
+                                 (:name "Today"
                                   :time-grid t
                                   :date today
                                   :todo "TODAY"
                                   :scheduled today
-                                  :order 4)
+                                  :order 6)
                                  (:name "Overdue - Not started"
                                   :and (:deadline past
                                         :not (:todo "STRT"))
@@ -439,12 +454,16 @@ change =org-directory=. It must be set before org loads!
                                   :and (:deadline past
                                         :todo "STRT")
                                   :order 2)
+                                 (:name "Scheduled"
+                                  :and (:scheduled past
+                                        :deadline future)
+                                  :order 3)
                                  (:name "Due Today"
                                   :deadline today
-                                  :order 3)
+                                  :order 4)
                                  (:name "Due Soon"
                                   :deadline future
-                                  :order 5)
+                                  :order 7)
                                  (:name "Unplanned"
                                   :deadline nil
                                   :order 9)
@@ -637,6 +656,14 @@ Set custom headline bullets
 
 #+END_SRC
 
+** EXPORT
+Perform modifications before export
+#+BEGIN_SRC elisp
+(after! ox
+  :config
+  (add-to-list 'org-export-filter-link-functions 'swapnilsm/convert-local-to-cs))
+#+END_SRC
+
 * EXPAND REGION
 #+BEGIN_SRC elisp
 (map! :nv "C-," #'er/expand-region)
@@ -758,6 +785,20 @@ Enable kill previous word with Meta-Backspace
 (map! :after vterm
       :map vterm-mode-map
       :ni "M-<backspace>" #'vterm-send-C-w)
+#+END_SRC
+* ESHELL
+#+BEGIN_SRC elisp
+;; Set history size
+(setq eshell-history-size 10000)
+
+;; Aliases
+(set-eshell-alias!
+ "up" "eshell-up")
+#+END_SRC
+* EAT
+Yet another terminal emulator for Emacs
+#+BEGIN_SRC elisp
+(use-package! eat)
 #+END_SRC
 * COMPANY
 Introduce delay before dropdown is shown
@@ -1060,7 +1101,7 @@ Don't let ediff open a new frame
 (set-formatter! 'google-diformat-python-formatter #'google-diformat-pyformat-changed :modes '((python-mode (not (eq major-mode 'google3-build-mode)))))
 (set-formatter! 'google-diformat-java-formatter #'google-diformat-google-java-format-changed :modes '(java-mode))
 (set-formatter! 'google-markdown-formatter #'google-mdformat :modes '(markdown-mode))
-(setq +format-on-save-enabled-modes '(c-mode c++-mode python-mode typescript typescript-mode markdown-mode))
+(setq +format-on-save-enabled-modes '(c-mode c++-mode python-mode markdown-mode typescript typescript-mode))
 #+END_SRC
 
 ** EDIFF
@@ -1141,6 +1182,27 @@ Don't let ediff open a new frame
 (defun swapnilsm/google3-build-cleaner-workspace ()
   (interactive)
   (google3-build-cleaner--run "-c=default"))
+#+END_SRC
+
+*** Convert local links to CS
+#+BEGIN_SRC elisp
+;; Define the replacements for sections in the local path
+(setq local-to-cs-map
+      '(("file:.*/google3/" . "http://cs/f:google3/")
+        ("::\\(.*\\)\\]\\[" . " \"\\1\"][")
+        ("::" . "")))
+
+(defun swapnilsm/convert-local-to-cs (link backend info)
+  "Convert local file paths to CS links"
+  (message link)
+  (seq-reduce
+   (lambda (link regexp-replacement-pair)
+     (replace-regexp-in-string
+      (car regexp-replacement-pair)
+      (cdr regexp-replacement-pair)
+      link))
+   local-to-cs-map
+   link))
 #+END_SRC
 
 ** HOOKS
@@ -1292,6 +1354,22 @@ Don't let ediff open a new frame
 (map! :leader
       (:prefix "i"
        :desc "Insert time elapsed(Timer)" :nvi "t"  #'org-timer))
+#+END_SRC
+
+** Pocket Reader
+#+BEGIN_SRC elisp
+(use-package! pocket-reader
+  :config
+  (map! :map pocket-reader-mode-map
+        "/" #'pocket-reader-search
+        "RET" #'pocket-reader-open-in-external-browser
+        "s-RET" #'pocket-reader-open-url
+        "d" #'pocket-reader-delete
+        "g" #'pocket-reader-refresh
+        "G" #'pocket-reader             ; Return to default view
+        "j" #'next-line
+        "k" #'previous-line
+        "y" #'pocket-reader-copy-url))
 #+END_SRC
 
 ** Test

@@ -5,10 +5,10 @@
 # key: mnotes
 # condition: t
 # --
-* [`(format-time-string "%B %d, %Y")`] $1
-** Attendees
+** [`(format-time-string "%B %d, %Y")`] $1
+*** Attendees
 - $2
-** Notes
-*** $0
-** Action items :TASKS:
-***
+*** Notes
+**** $0
+*** Action items :TASKS:
+****

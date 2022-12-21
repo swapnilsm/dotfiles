@@ -59,7 +59,8 @@
 (package! org-agenda-property)
 ;; (package! org-gcal :recipe
 ;;   (:host github :repo "kidd/org-gcal.el"))
-(package! leetcode)
+(package! leetcode
+  :recipe (:repo "swapnilsm/leetcode.el"))
 (package! doct)
 (package! command-log-mode)
 (package! org-pandoc-import
@@ -155,3 +156,6 @@
 ;; (package! project :disable)
 ;; (package! company-box)
 ;; (package! sql-dremel :built-in 'prefer)
+
+(package! eat :recipe (:host codeberg :repo "akib/emacs-eat" :files ("*")))
+(package! pocket-reader)
