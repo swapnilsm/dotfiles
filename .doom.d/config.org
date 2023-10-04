@@ -77,8 +77,10 @@
   - [[#expand-region-1][EXPAND REGION]]
   - [[#projectile][PROJECTILE]]
   - [[#datetimecalendar][DATE/TIME/CALENDAR]]
-  - [[#pocket-reader][Pocket Reader]]
-  - [[#test][Test]]
+- [[#pocket-reader][Pocket Reader]]
+- [[#atomic-chrome--ghost-text][Atomic Chrome / Ghost Text]]
+- [[#test][Test]]
+- [[#gc][GC]]
 
 * HELP
 
@@ -147,6 +149,7 @@ font string. You generally only need these two:
 ;; (setq doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
 (setq doom-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'regular))
 (setq doom-variable-pitch-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'light))
+(setq doom-big-font (font-spec :family "JetBrains Mono NL" :size 24 :weight 'regular))
 ;; (setq doom-variable-pitch-font (font-spec :family "Google Sans" :weight 'regular))
 #+END_SRC
 
@@ -187,7 +190,17 @@ Toggle title bar and rounded corners
 This determines the style of line numbers in effect. If set to =nil=, line
 numbers are disabled. For relative line numbers, set this to =relative=.
 #+BEGIN_SRC elisp
-(setq display-line-numbers-type 'relative)
+(defun swapnilsm/set-line-number-style ()
+  (setq display-line-number-type 'relative
+        display-line-numbers 'relative
+        doom--line-number-style 'relative))
+
+(defun swapnilsm/clear-line-number-style ()
+  (setq display-line-number-type nil
+        display-line-numbers nil
+        doom--line-number-style nil))
+
+(swapnilsm/set-line-number-style)
 #+END_SRC
 
 Start Emacs in maximized mode
@@ -226,9 +239,24 @@ change =org-directory=. It must be set before org loads!
   ;;       org-clock-in-resume t)
   (setq org-tags-column -160))
 
-;; Temporary work-around for searching through the folded area
+;; Temporary work-around for searching through the folded area - https://github.com/doomemacs/doomemacs/issues/6478
 (after! evil-search
   (evil-select-search-module 'evil-search-module 'isearch))
+
+;; Search across multiple lines
+;; (after! org
+;;   (setq consult-ripgrep-args "rg --null --multiline --multiline-dotall --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --with-filename --line-number --search-zip"))
+
+;; (use-package! consult-org-roam
+;;   :after org-roam
+;;   :init
+;;   (consult-org-roam-mode 1)
+;;   :custom
+;;   ;; Use `ripgrep' for searching with `consult-org-roam-search'
+;;   (consult-org-roam-grep-func #'consult-ripgrep)
+;;   ;; Display org-roam buffers right after non-org-roam buffers
+;;   ;; in consult-buffer (and not down at the bottom)
+;;   (consult-org-roam-buffer-after-buffers t))
 
 #+END_SRC
 
@@ -304,14 +332,17 @@ change =org-directory=. It must be set before org loads!
   :after org
   :commands org-agenda
   :config
+  (map! :localleader
+        :map org-agenda-mode-map
+        "s" #'org-save-all-org-buffers)
+  (map! :map org-agenda-mode-map
+        :m "s-<return>" #'org-agenda-open-link
+        :m "s-RET"      #'org-agenda-open-link)
   (setq org-refile-use-outline-path t)
   (setq org-refile-targets '((nil . (:tag . "TASKS"))
                              (org-agenda-files :tag . "TASKS")))
   (message "org-agenda loaded"))
 #+END_SRC
-
-#+RESULTS:
-: t
 
 *** Custom functions
 **** Get property value: SHORT
@@ -387,9 +418,6 @@ change =org-directory=. It must be set before org loads!
 *** Sensible defaults
 #+BEGIN_SRC elisp
 (after! org-agenda
-  (map! :localleader
-        :map org-agenda-mode-map
-        "s" #'org-save-all-org-buffers)
   (setq org-agenda-skip-scheduled-if-deadline-is-shown t
         org-agenda-include-deadlines t
         org-agenda-show-all-dates nil
@@ -403,11 +431,12 @@ change =org-directory=. It must be set before org loads!
           (todo . " %i %?-12t %11s %50b")
           (tags . " %i %?-12t % s %50(sm-get-short-prefix) > ")
           (search . " %i %?-12t % s %50(sm-get-short-prefix) > "))
+        ;; '((agenda . " %i %?-12t %s  > ")
+        ;;   (todo . " %i %?-12t %11s %50b")
+        ;;   (tags . " %i %?-12t % s > ")
+        ;;   (search . " %i %?-12t % s > "))
         org-agenda-span 1))
 #+END_SRC
-
-#+RESULTS:
-: 1
 
 *** Custom commands
 ***** By assignee
@@ -569,14 +598,27 @@ change =org-directory=. It must be set before org loads!
 ;; (use-package! org-gcal
 ;;   :after org-agenda
 ;;   :init
+;;   (setq plstore-cache-passphrase-for-symmetric-encryption t)
 ;;   (setq org-gcal-client-id "client-id"
 ;;         org-gcal-client-secret "client-secret"
-;;         org-gcal-file-alist '(
-;;                               ("swapnilsm@google.com" . "~/schedule.org")
-;;                               ))
+;;         org-gcal-fetch-file-alist '(
+;;                                     ("swapnilsm@gmail.com" . "~/schedule.org")
+;;                                     ))
 ;;   ;; (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-fetch)))
 ;;   ;; (run-with-idle-timer 1800 t (lambda () (org-gcal-fetch)))
 ;;   )
+#+END_SRC
+
+#+BEGIN_SRC elisp
+;; (use-package! org-caldav
+;;   :after org-roam
+;;   :config
+;;   (setq org-caldav-url 'google)
+;;   (setq org-caldav-calendar-id "swapnilsm@google.com")
+;;   (setq org-caldav-inbox "~/calendar.org")
+;;   (setq org-icalendar-timezone "Asia/Kolkata")
+;;   (setq org-caldav-oauth2-client-id "client-id")
+;;   (setq org-caldav-oauth2-client-secret "client-secret"))
 #+END_SRC
 ** ORG PANDOC IMPORT
 *** IMPORT
@@ -593,20 +635,29 @@ Set Org Reveal theme to "league"
 
 #+BEGIN_SRC elisp
 (defun sm-org-present-start ()
-  ;; Center the presentation and wrap lines
-  (setq visual-fill-column-center-text t
-        visual-fill-column-width 200)
-  (visual-fill-column-mode 1)
-  (visual-line-mode 1)
-  (setq doom--line-number-style nil)
-  (setq display-line-numbers nil))
+  (mixed-pitch-mode 0)
+  (swapnilsm/clear-line-number-style)
+  (writeroom-mode 1)
+  (org-present-big)
+  (org-display-inline-images)
+  (org-present-hide-cursor)
+  (org-present-read-only)
+  (evil-force-normal-state)
+  (set-face-attribute 'header-line nil :height 1000)
+  ;; Set a blank header line string to create blank space at the top
+  (setq header-line-format " "))
 
 (defun sm-org-present-end ()
-  ;; Stop centering and wrapping lines
-  (visual-fill-column-mode 0)
-  (visual-line-mode 0)
-  (setq doom--line-number-style 'relative)
-  (setq display-line-numbers 'relative))
+  (mixed-pitch-mode 1)
+  (swapnilsm/set-line-number-style)
+  (writeroom-mode 0)
+  (org-present-small)
+  (org-present-show-cursor)
+  (org-present-read-write)
+  (org-remove-inline-images)
+  (set-face-attribute 'header-line nil :height 150)
+  ;; Set a blank header line string to create blank space at the top
+  (setq header-line-format nil))
 
 (defun sm-org-present-prepare-slide (buffer-name heading)
   ;; Show headlines only
@@ -618,15 +669,18 @@ Set Org Reveal theme to "league"
 
 ;; Install visual-fill-column for centered text
 (use-package! visual-fill-column
-  :after org
+  :after org)
+
+;; Install writeroom-mode for better presentation setup
+(use-package! writeroom-mode
+  :after visual-fill-column
   :config
-  ;; Configure fill width
-  (setq visual-fill-column-width 200
-        visual-fill-column-center-text 1))
+  (setq writeroom-width 60
+        writeroom-fullscreen-effect nil))
 
 (use-package! org-present
   :after org
-  :commands (org-present)
+  ;; :commands (org-present)
   :config
   ;; Override keys from evil-collections to sensible defaults
   (map! :map org-present-mode-keymap
@@ -637,8 +691,8 @@ Set Org Reveal theme to "league"
         :n "zo" #'+org/open-fold)
 
   (map! :localleader
-         :map org-mode-map
-         :desc "present" "p" #'org-present)
+        :map org-mode-map
+        :desc "present" "p" #'org-present)
   (add-hook! 'org-present-mode-hook 'sm-org-present-start)
   (add-hook! 'org-present-mode-quit-hook 'sm-org-present-end)
   (add-hook! 'org-present-after-navigate-functions 'sm-org-present-prepare-slide))
@@ -662,6 +716,18 @@ Perform modifications before export
 (after! ox
   :config
   (add-to-list 'org-export-filter-link-functions 'swapnilsm/convert-local-to-cs))
+#+END_SRC
+
+Specific export directories for different projects
+#+BEGIN_SRC elisp
+(setq org-publish-project-alist
+      '(
+        ("roam-files"
+         :base-directory "~/roam-files/"
+         :publishing-directory "~/roam-files-published/"
+         )
+        )
+      )
 #+END_SRC
 
 * EXPAND REGION
@@ -704,7 +770,11 @@ Perform modifications before export
   :init
   (setq leetcode-save-solutions t)
   (setq leetcode-directory "~/leetcode")
-  :commands (leetcode))
+  :commands (leetcode)
+  :config
+  ;; Set popup rule so that the problem buffer opens up on side.
+  (set-popup-rule! "^\\*html\\*" :side 'right :slot 1 :vslot 1 :size 0.5)
+  )
 #+END_SRC
 * PYTHON
 #+BEGIN_SRC elisp
@@ -724,6 +794,7 @@ Perform modifications before export
 * ORG ROAM
 ** ORG ROAM
 #+BEGIN_SRC elisp
+  (setq org-roam-database-connector 'sqlite3)
   (use-package! org-roam
     :after org-agenda
     :config
@@ -865,12 +936,15 @@ Introduce delay before dropdown is shown
   (setq eglot-connect-timeout 30)
   :config
   (setq eglot-sync-connect 0)
+  ;; Customizable via `completion-category-overrides'.
+  (when (assoc 'flex completion-styles-alist)
+    (add-to-list 'completion-category-defaults '(eglot (styles flex basic))))
   (google3-eglot-setup)
   (defun eglot--path-to-uri (path)
     "URIfy PATH."
     (url-hexify-string
      (concat "file://" (if (eq system-type 'windows-nt) "/")
-           (string-remove-prefix "/Volumes" (file-truename path)))
+             (string-remove-prefix "/Volumes" (file-truename path)))
      url-path-allowed-chars))
   (setq eldoc-message-commands (make-vector
                                 eldoc-message-commands-table-size 0))
@@ -1026,9 +1100,9 @@ Introduce delay before dropdown is shown
       (progn (message "sm/google3-early-exit overrode.") nil)
     (apply orig-fun args)))
 
-(after! magit
-  (advice-add 'magit-toplevel :around #'sm/google3-early-exit)
-  (advice-add 'magit-inside-worktree-p :around #'sm/google3-early-exit))
+;; (after! magit
+;;   (advice-add 'magit-toplevel :around #'sm/google3-early-exit)
+;;   (advice-add 'magit-inside-worktree-p :around #'sm/google3-early-exit))
 #+END_SRC
 
 #+RESULTS:
@@ -1230,6 +1304,8 @@ Don't let ediff open a new frame
 (add-hook! 'ediff-keymap-setup-hook :append #'add-d-to-ediff-mode-map)
 (add-hook! 'after-init-hook :append #'global-company-mode)
 (global-set-key (kbd "<f5>") #'company-complete)
+(add-hook 'org-after-todo-state-change-hook #'org-save-all-org-buffers)
+(add-hook 'org-clock-out-hook #'org-save-all-org-buffers)
 #+END_SRC
 ** NECESSARY RATHER THAN USING DOOM AUTO-REVERT MODE TO ENABLE EGLOT-RECONNECT.
 #+BEGIN_SRC elisp
@@ -1356,7 +1432,7 @@ Don't let ediff open a new frame
        :desc "Insert time elapsed(Timer)" :nvi "t"  #'org-timer))
 #+END_SRC
 
-** Pocket Reader
+* Pocket Reader
 #+BEGIN_SRC elisp
 (use-package! pocket-reader
   :config
@@ -1372,11 +1448,24 @@ Don't let ediff open a new frame
         "y" #'pocket-reader-copy-url))
 #+END_SRC
 
-** Test
+* Atomic Chrome / Ghost Text
+Edit browser text within Emacs and that too live
+
+#+BEGIN_SRC elisp
+(use-package! atomic-chrome)
+#+END_SRC
+
+
+* Test
 #+BEGIN_SRC elisp
 ;; built-in `project' on 26+
 (setq doom-modeline-project-detection 'project)
 ;; or `find-in-project' if it's installed
 (setq doom-modeline-project-detection 'ffip)
 (setq find-file-visit-truename nil)
+#+END_SRC
+
+* GC
+#+BEGIN_SRC elisp
+(setq garbage-collection-messages t)
 #+END_SRC

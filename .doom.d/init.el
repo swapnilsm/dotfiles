@@ -30,7 +30,7 @@
        ;;  ;; +childframe
        ;;  +prescient
        ;;  +fuzzy)               ; a search engine for love and life
-       (vertico +childframe +icons)
+       (vertico +icons)
 
        :ui
        ;; deft              ; notational velocity for Emacs
@@ -67,7 +67,7 @@
        lispy             ; vim for lisp, for people who don't like vim
        multiple-cursors  ; editing in many places at once
        ;;objed             ; text object editing for the innocent
-       parinfer          ; turn lisp into python, sort of
+       ;; parinfer          ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
        snippets          ; my elves. They type so I don't have to
        ;;word-wrap         ; soft wrapping with language-aware indent
@@ -88,7 +88,7 @@
        :checkers
        (syntax +childframe)              ; tasing you for every semicolon you forget
        (spell +flyspell +aspell)             ; tasing you for misspelling mispelling
-       grammar           ; tasing grammar mistake every you make
+       ;; grammar           ; tasing grammar mistake every you make
 
        :tools
        ;;ansible
@@ -159,7 +159,9 @@
         +pomodoro
         ;; +present
         +pretty
-        +roam2)               ; organize your plain life in plain text
+        +roam2
+        )
+                       ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional

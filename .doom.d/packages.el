@@ -55,10 +55,26 @@
 (package! beacon)
 (package! dimmer)
 ;; (package! org-fancy-priorities)
+(package! org
+  ;; :pin "d6f3aed7b1b01df7b092a47099205847b34fdd37"
+  ;; :pin "806abc5a2"
+  ;; :pin "ca873f7"
+  :built-in nil)
 (package! org-super-agenda)
 (package! org-agenda-property)
-;; (package! org-gcal :recipe
-;;   (:host github :repo "kidd/org-gcal.el"))
+;; (package! emacs-aio :recipe
+;;   (:host github :repo "skeeto/emacs-aio"))
+;; (package! emacs-request :recipe
+;;   (:host github :repo "tkf/emacs-request"))
+;; (package! alert :recipe
+;;   (:host github :repo "jwiegley/alert"))
+;; (package! emacs-oauth2-auto :recipe
+;;   (:host github :repo "rhaps0dy/emacs-oauth2-auto"))
+;; (package! persist)
+(package! org-gcal :recipe
+  (:host github :repo "kidd/org-gcal.el"))
+(package! org-caldav :recipe
+  (:host github :repo "dengste/org-caldav"))
 (package! leetcode
   :recipe (:repo "swapnilsm/leetcode.el"))
 (package! doct)
@@ -68,8 +84,6 @@
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 (package! protobuf-mode)
-(unpin! org-roam)
-(package! org-roam-ui)
 (package! ox-gfm)
 (package! org-ql)
 (package! ox-pandoc
@@ -86,8 +100,8 @@
 ;; (package! browse-url :built-in 'prefer)
 
 ;; Basic Google3
-(package! google3 :built-in 'prefer)
-(package! google3-mode :built-in 'prefer)
+(package! google3 :type 'local :built-in 'prefer)
+(package! google3-mode :type 'local :built-in 'prefer)
 
 ;; Google3 file handling
 ;; (package! citc :built-in 'prefer)
@@ -113,7 +127,9 @@
 (package! google3-build-mode :built-in 'prefer)
 (package! google3-build-capf :built-in 'prefer)
 (package! google3-build-cleaner :built-in 'prefer)
-(package! iblaze-latest :recipe (:local-repo "~/.emacs-packages/iblaze-latest/"))
+
+(package! iblaze-latest :recipe (:local-repo "~/Projects/iblaze/"))
+;; (package! iblaze-latest :recipe (:host nil :branch master :repo "sso://user/swapnilsm/iblaze"))
 
 ;; Imports and includes
 (package! google-imports :built-in 'prefer)
@@ -159,3 +175,11 @@
 
 (package! eat :recipe (:host codeberg :repo "akib/emacs-eat" :files ("*")))
 (package! pocket-reader)
+(package! atomic-chrome)
+(package! writeroom-mode)
+(package! chatgpt
+  :recipe (:host github :repo "joshcho/ChatGPT.el" :files ("dist" "*.el")))
+(package! org-roam-ui)
+(package! oauth2)
+(package! emacsql-sqlite3)
+(package! consult-org-roam)
