@@ -4,7 +4,7 @@
 #+OPTIONS: TOC:2
 #+PROPERTY: header-args:elisp
 
-* TABLE OF CONTENTS                                                                                                :TOC:
+* TABLE OF CONTENTS :TOC:
 - [[#help][HELP]]
 - [[#enable-lexical-binding][ENABLE LEXICAL BINDING]]
 - [[#identity][IDENTITY]]
@@ -13,6 +13,7 @@
   - [[#theme][THEME]]
   - [[#splash-image][SPLASH IMAGE]]
   - [[#titlebar---version-29][TITLEBAR - Version 29+]]
+  - [[#smooth-scrolling][Smooth scrolling]]
   - [[#other][OTHER]]
 - [[#org][ORG]]
   - [[#org-directory][ORG DIRECTORY]]
@@ -81,6 +82,22 @@
 - [[#atomic-chrome--ghost-text][Atomic Chrome / Ghost Text]]
 - [[#test][Test]]
 - [[#gc][GC]]
+- [[#workspaces][Workspaces]]
+- [[#pophint][Pophint]]
+- [[#evil-overrides][Evil overrides]]
+- [[#subword-mode][Subword mode]]
+- [[#embark][Embark]]
+- [[#avy-embark][Avy Embark]]
+- [[#gptel][GPTel]]
+- [[#authinfo][Authinfo]]
+- [[#gcmh][GCMH]]
+- [[#calendar][Calendar]]
+- [[#hyperbole][Hyperbole]]
+- [[#skip-shell-confirmation][Skip shell confirmation]]
+- [[#org-web-tools][Org web tools]]
+- [[#org-edna][Org edna]]
+- [[#kmonad][kmonad]]
+- [[#memory-usage][memory usage]]
 
 * HELP
 
@@ -104,15 +121,15 @@ they are implemented.
 * ENABLE LEXICAL BINDING
 This section needs to be the first SRC block so that the comment appears at
 the top of the file generated.
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; -*- lexical-binding: t; -*-
 #+END_SRC
 
 * IDENTITY
 Some functionality uses this to identify you, e.g. GPG configuration, email
 clients, file templates and snippets.
-#+BEGIN_SRC elisp
-(setq user-full-name "Swapnil Mahajan"
+#+BEGIN_SRC elisp :results silent
+(setq! user-full-name "Swapnil Mahajan"
       user-mail-address "swapnilsm@google.com")
 #+END_SRC
 
@@ -130,35 +147,36 @@ are the three important ones:
 They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 font string. You generally only need these two:
 
-#+BEGIN_SRC elisp
-;; (setq doom-font (font-spec :family "Meslo LG L for Powerline" :size 15)
+#+BEGIN_SRC elisp :results silent
+;; (setq! doom-font (font-spec :family "Meslo LG L for Powerline" :size 15)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 
-;; (setq doom-font (font-spec :family "Monaco" :size 13))
-;; (setq ns-use-thin-smoothing t)
-;; (setq ns-antialias-text t)
-;; (setq doom-font (font-spec :family "Iosevka Aile" :size 15 :weight 'light))
-;; (setq doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 15 :weight 'regular))
-;; (setq doom-font (font-spec :family "Fira Code" :size 15 :weight 'light))
-;; (setq doom-variable-pitch-font (font-spec :family "Fira Code" :size 15 :weight 'light))
-;; (setq doom-font (font-spec :family "Source Code Pro" :size 15 :weight 'light))
-;; (setq doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 15 :weight 'light))
-;; (setq doom-font (font-spec :family "VictorMono Nerd Font Mono" :size 15 :weight 'regular))
-;; (setq doom-variable-pitch-font (font-spec :family "VictorMono Nerd Font Mono" :size 15 :weight 'regular))
-;; (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
-;; (setq doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
-(setq doom-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'regular))
-(setq doom-variable-pitch-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'light))
-(setq doom-big-font (font-spec :family "JetBrains Mono NL" :size 24 :weight 'regular))
-;; (setq doom-variable-pitch-font (font-spec :family "Google Sans" :weight 'regular))
+;; (setq! doom-font (font-spec :family "Monaco" :size 13))
+(setq! ns-use-thin-smoothing t)
+(setq! ns-antialias-text t)
+(setq! doom-font (font-spec :family "Iosevka Term" :size 17 :weight 'light))
+(setq! doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 19 :weight 'light))
+(setq! doom-big-font (font-spec :family "Iosevka Aile" :size 24 :weight 'light))
+;; (setq! doom-font (font-spec :family "Fira Code" :size 15 :weight 'light))
+;; (setq! doom-variable-pitch-font (font-spec :family "Fira Code" :size 15 :weight 'light))
+;; (setq! doom-font (font-spec :family "Source Code Pro" :size 15 :weight 'light))
+;; (setq! doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 15 :weight 'light))
+;; (setq! doom-font (font-spec :family "VictorMono Nerd Font Mono" :size 15 :weight 'regular))
+;; (setq! doom-variable-pitch-font (font-spec :family "VictorMono Nerd Font Mono" :size 15 :weight 'regular))
+;; (setq! doom-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
+;; (setq! doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
+;; (setq! doom-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'regular))
+;; (setq! doom-variable-pitch-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'light))
+;; (setq! doom-big-font (font-spec :family "JetBrains Mono NL" :size 24 :weight 'regular))
+;; (setq! doom-variable-pitch-font (font-spec :family "Google Sans" :weight 'regular))
 #+END_SRC
 
 Use variable pitch font for text and fixed pitch font for code blocks
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! mixed-pitch
   :hook (text-mode . mixed-pitch-mode)
   :config
-  (setq mixed-pitch-set-height t)
+  (setq! mixed-pitch-set-height t)
   (set-face-attribute 'variable-pitch nil :height 1.1))
 #+END_SRC
 
@@ -166,30 +184,48 @@ Use variable pitch font for text and fixed pitch font for code blocks
 There are two ways to load a theme. Both assume the theme is installed and
 available. You can either set =doom-theme= or manually load a theme with the
 =load-theme= function. This is the default:
-#+BEGIN_SRC elisp
-;; (setq doom-theme 'doom-monokai-spectrum)
-;; (setq doom-theme 'doom-snazzy)
-;; (setq doom-theme 'doom-dracula)
-;; (setq doom-theme 'doom-old-hope)
-(setq doom-theme 'doom-one)
+#+BEGIN_SRC elisp :results silent
+;; (setq! doom-theme 'doom-monokai-spectrum)
+;; (setq! doom-theme 'doom-snazzy)
+;; (setq! doom-theme 'doom-dracula)
+;; (setq! doom-theme 'doom-old-hope)
+(setq! doom-theme 'doom-one)
+#+END_SRC
+
+Change =link= face weight
+#+BEGIN_SRC elisp :results silent
+(custom-set-faces
+ '(link ((t (:weight normal)))))
 #+END_SRC
 
 ** SPLASH IMAGE
 Update the normal ASCII splash image on every startup
-#+BEGIN_SRC elisp
-(setq fancy-splash-image "~/dotfiles/.doom.d/pictures/iron-man-splash.png")
+#+BEGIN_SRC elisp :results silent
+(setq! fancy-splash-image "~/dotfiles/.doom.d/pictures/iron-man-splash.png")
 #+END_SRC
 
 ** TITLEBAR - Version 29+
 Toggle title bar and rounded corners
-#+BEGIN_SRC elisp
-(add-to-list 'default-frame-alist '(undecorated-round . t))
+#+BEGIN_SRC elisp :results silent
+(add-to-list 'default-frame-alist '(undecorated . t))
+#+END_SRC
+
+** Smooth scrolling
+#+BEGIN_SRC elisp :results silent
+(use-package! pixel-scroll
+  :bind
+  ([remap evil-scroll-down]   . pixel-scroll-interpolate-down)
+  ([remap evil-scroll-up] . pixel-scroll-interpolate-up)
+  :custom
+  (pixel-scroll-precision-interpolate-page t)
+  :init
+  (pixel-scroll-precision-mode 1))
 #+END_SRC
 
 ** OTHER
 This determines the style of line numbers in effect. If set to =nil=, line
 numbers are disabled. For relative line numbers, set this to =relative=.
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun swapnilsm/set-line-number-style ()
   (setq display-line-number-type 'relative
         display-line-numbers 'relative
@@ -204,40 +240,64 @@ numbers are disabled. For relative line numbers, set this to =relative=.
 #+END_SRC
 
 Start Emacs in maximized mode
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+END_SRC
 
 Ivy frame position
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; (after! ivy-posframe
-;;   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-top-center))))
+;;   (setq! ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-top-center))))
 #+END_SRC
 
 Truncate file name displayed in the modeline to truncate all except the project name & file name
-#+BEGIN_SRC elisp
-(setq doom-modeline-buffer-file-name-style 'truncate-except-project)
+#+BEGIN_SRC elisp :results silent
+(setq! doom-modeline-buffer-file-name-style 'truncate-except-project)
+#+END_SRC
+
+Disable BOLD faces for good
+#+BEGIN_SRC elisp :results silent
+(defun swapnilsm/disable-bold-faces ()
+  (interactive)
+  (mapc
+   (lambda (face)
+     (when (eq (face-attribute face :weight) 'bold)
+       (set-face-attribute face nil :weight 'normal)))
+   (face-list)))
+
+(add-hook 'doom-after-modules-config-hook 'swapnilsm/disable-bold-faces)
 #+END_SRC
 
 * ORG
 ** ORG DIRECTORY
 If you use =org= and don't want your org files in the default location below,
 change =org-directory=. It must be set before org loads!
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! org
   :init
-  (setq org-directory "~/roam-files/")
-  (setq org-use-property-inheritance t)
+  (setq! org-directory "~/roam-files/")
+  (setq! org-use-property-inheritance t)
   :commands (org-capture org-agenda)
   :config
   (message "Org mode loaded")
   ;; (org-clock-persistence-insinuate)
-  ;; (setq org-clock-persist t
+  ;; (setq! org-clock-persist t
   ;;       org-clock-persist-query-resume nil
   ;;       org-clock-auto-clock-resolution 'when-no-clock-is-running
   ;;       org-clock-history-length 23
   ;;       org-clock-in-resume t)
-  (setq org-tags-column -160))
+  (setq! org-tags-column 0)
+  (setq! org-todo-keywords '((sequence "TODO(t)" "STRT(s)" "WAIT(w)" "HOLD(h)" "MTNG(m)" "NEXT(n)" "|" "DONE(d)" "KILL(k)")
+                             (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
+                             (sequence "|" "OKAY(o)" "YES(y)" "NO(x)")))
+  (setq! org-todo-keywords-for-agenda '("NO" "YES" "OKAY" "[X]" "[?]" "[-]" "[ ]" "KILL" "DONE" "MTNG" "HOLD" "WAIT" "STRT" "TODO" "NEXT"))
+  ;; (setq! org-tag-alist '(
+  ;;                       ("RESOURCE" . ?r)
+  ;;                       ("DESIGN" . ?d)
+  ;;                       ("PROPOSAL" . ?p)
+  ;;                       ("PRD" . nil)
+  ;;                       ("ISSUE" . ?i)))
+  )
 
 ;; Temporary work-around for searching through the folded area - https://github.com/doomemacs/doomemacs/issues/6478
 (after! evil-search
@@ -245,7 +305,7 @@ change =org-directory=. It must be set before org loads!
 
 ;; Search across multiple lines
 ;; (after! org
-;;   (setq consult-ripgrep-args "rg --null --multiline --multiline-dotall --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --with-filename --line-number --search-zip"))
+;;   (setq! consult-ripgrep-args "rg --null --multiline --multiline-dotall --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --with-filename --line-number --search-zip"))
 
 ;; (use-package! consult-org-roam
 ;;   :after org-roam
@@ -261,11 +321,11 @@ change =org-directory=. It must be set before org loads!
 #+END_SRC
 
 ** CAPTURE TEMPLATES
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! org
   (use-package! doct
     :config
-    (setq org-capture-templates
+    (setq! org-capture-templates
           (doct '(("Todo" :keys "t"
                    :file "~/roam-files/20221104172849-todo.org"
                    :headline "Inbox"
@@ -276,7 +336,7 @@ change =org-directory=. It must be set before org loads!
                    :headline "Tasks"
                    :prepend t
                    :template ("* TODO Interview %^{Name}%? [[[%^{My gHire Link}][My gHire]]]"
-                              "DEADLINE: %^{Date}t"))
+                              "DEADLINE: %^{Date}T"))
                   ("Good read" :keys "r"
                    :file "~/roam-files/20220725134226-good_reads.org"
                    :headline "Good Reads"
@@ -285,20 +345,22 @@ change =org-directory=. It must be set before org loads!
 #+END_SRC
 
 ** PREVIEW
-#+BEGIN_SRC elisp
-(after! org
-  (use-package! ox-gfm))
+#+BEGIN_SRC elisp :results silent
+;; (after! org
+;;   (use-package! ox-gfm))
 #+END_SRC
 ** ORG QL
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! org-ql
   :after org)
+;; (use-package! helm-org-ql
+;;   :after org-ql)
 #+END_SRC
 
 ** DEFAULT APPS
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! org
-  (setq org-file-apps
+  (setq! org-file-apps
         (append
          '(
            (auto-mode . emacs)
@@ -306,28 +368,28 @@ change =org-directory=. It must be set before org loads!
            ("\\.docx?\\'" . default)
            )
          org-file-apps))
-  (setq grip-preview-use-webkit 'nil))
+  (setq! grip-preview-use-webkit 'nil))
 #+END_SRC
 
 ** PRIORITIES
 *** Appearance
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! org-fancy-priorities
   :hook
   (org-mode . org-fancy-priorities-mode)
   :config
-  (setq org-fancy-priorities-list '("[HIGH]" "[MID]" "[LOW]" "[OPT]")))
+  (setq! org-fancy-priorities-list '("[HIGH]" "[MID]" "[LOW]" "[OPT]")))
 #+END_SRC
 
 *** Inheritance
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! org
-  (setq org-use-property-inheritance t))
+  (setq! org-use-property-inheritance t))
 #+END_SRC
 
 ** AGENDA
 *** Load org-agenda
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! org-agenda
   :after org
   :commands org-agenda
@@ -337,27 +399,33 @@ change =org-directory=. It must be set before org loads!
         "s" #'org-save-all-org-buffers)
   (map! :map org-agenda-mode-map
         :m "s-<return>" #'org-agenda-open-link
-        :m "s-RET"      #'org-agenda-open-link)
-  (setq org-refile-use-outline-path t)
-  (setq org-refile-targets '((nil . (:tag . "TASKS"))
+        :m "s-RET"      #'org-agenda-open-link
+        :m "s-1"        #'+workspace/switch-to-0
+        :m "s-2"        #'+workspace/switch-to-1
+        :m "s-3"        #'+workspace/switch-to-2
+        :m "s-4"        #'+workspace/switch-to-3
+        )
+  (setq! org-refile-use-outline-path t)
+  (setq! org-refile-targets '((nil . (:tag . "TASKS"))
                              (org-agenda-files :tag . "TASKS")))
   (message "org-agenda loaded"))
 #+END_SRC
 
 *** Custom functions
 **** Get property value: SHORT
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm-get-short-prefix ()
-  (let ((shortname (org-entry-get-with-inheritance "SHORT"))
+  (let ((shortname (if (eq major-mode 'org-mode)
+                       (org-entry-get-with-inheritance "SHORT")))
         (shortfilename (first (last (car (org-collect-keywords '("SHORT"))))))
-        (trucname (truncate-string-to-width (or (car (last (org-get-outline-path))) "") 40 nil nil "...")))
+        (trucname (truncate-string-to-width (or (car (last (if (eq major-mode 'org-mode)(org-get-outline-path)))) "") 40 nil nil "...")))
     (cond (shortname shortname)
           (shortfilename shortfilename)
           (t trucname))))
 #+END_SRC
 
 **** Agenda skip function
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm-is-mixed-category ()
   (string= "mixed" (org-get-category)))
 (defun sm-am-i-the-owner()
@@ -369,23 +437,25 @@ change =org-directory=. It must be set before org loads!
         next-headline
       nil)))
 #+END_SRC
+
 **** Get calendar agenda files
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm-get-calendar-agenda-files ()
-  (list "~/work-sync/org-files/schedule/schedule.org"))
+  (list "~/schedule.org"))
 #+END_SRC
+
 **** Get work agenda files
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm-get-work-agenda-files ()
   (list "~/work-sync/org-files/"))
 #+END_SRC
 **** Get personal agenda files
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm-get-personal-agenda-files ()
   (list "~/personal-sync/org-files/"))
 #+END_SRC
 **** Get org-roam agenda files
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm/org-roam-filter-by-tag (tag-name)
   (lambda (node)
     (member tag-name (org-roam-node-tags node))))
@@ -397,28 +467,28 @@ change =org-directory=. It must be set before org loads!
            (org-roam-node-list))))
 
 (defun sm/get-org-roam-agenda-files ()
-  (sm/org-roam-list-notes-by-tag "Project"))
+  (sm/org-roam-list-notes-by-tag "PROJECT"))
 
 (defun sm/refresh-agenda-list ()
   (interactive)
-  (setq org-agenda-files (delete-dups (append (sm/get-org-roam-agenda-files) (sm-get-personal-agenda-files) (sm-get-work-agenda-files))))
+  (setq org-agenda-files (delete-dups (append (sm/get-org-roam-agenda-files) (sm-get-calendar-agenda-files))))
   (message "Refreshed org-agenda-files"))
 #+END_SRC
 
 **** Get org-roam projects
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm/org-roam-find-project ()
   (interactive)
   (org-roam-node-find
    nil
    nil
-   (sm/org-roam-filter-by-tag "Project")))
+   (sm/org-roam-filter-by-tag "PROJECT")))
 #+END_SRC
 
 *** Sensible defaults
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! org-agenda
-  (setq org-agenda-skip-scheduled-if-deadline-is-shown t
+  (setq! org-agenda-skip-scheduled-if-deadline-is-shown t
         org-agenda-include-deadlines t
         org-agenda-show-all-dates nil
         org-agenda-compact-blocks t
@@ -427,20 +497,34 @@ change =org-directory=. It must be set before org loads!
         org-agenda-breadcrumbs-separator " > "
         org-agenda-current-time-string "            "
         org-agenda-prefix-format
-        '((agenda . " %i %?-12t %s %50(sm-get-short-prefix) > ")
-          (todo . " %i %?-12t %11s %50b")
-          (tags . " %i %?-12t % s %50(sm-get-short-prefix) > ")
-          (search . " %i %?-12t % s %50(sm-get-short-prefix) > "))
+        '((agenda . " %i %?-12t %26(sm-get-short-prefix) > ")
+          (todo . " %40(sm-get-short-prefix) > ")
+          (tags . " %i %?-12t % s %40(sm-get-short-prefix) > ")
+          (search . " %i %?-12t % s %40(sm-get-short-prefix) > "))
+        org-agenda-sorting-strategy
+        '((agenda habit-down time-up urgency-down category-keep)
+          (todo time-up urgency-down category-keep)
+          (tags urgency-down category-keep)
+          (search category-keep))
         ;; '((agenda . " %i %?-12t %s  > ")
         ;;   (todo . " %i %?-12t %11s %50b")
         ;;   (tags . " %i %?-12t % s > ")
         ;;   (search . " %i %?-12t % s > "))
         org-agenda-span 1))
+
+(after! org
+  (setq! org-complete-tags-always-offer-all-agenda-tags t))
+#+END_SRC
+
+#+BEGIN_SRC elisp :results silent
+(after! recentf
+  :config
+  (setq! recentf-max-saved-items 20))
 #+END_SRC
 
 *** Custom commands
 ***** By assignee
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! org-agenda
   (add-to-list 'org-agenda-custom-commands
                '("oo"  "By Owner"
@@ -455,9 +539,73 @@ change =org-directory=. It must be set before org loads!
                                )))))))
 #+END_SRC
 
+***** My next agenda
+#+BEGIN_SRC elisp :results silent
+(setq! org-agenda-clockreport-parameter-plist '(:narrow 200 :maxlevel 5 :fileskip0 t :link nil :indent t :tcolumns 2))
+(after! org-agenda
+  (add-to-list 'org-agenda-custom-commands
+               '("c"  "My next agenda"
+                 ((agenda
+                   ""
+                   ((org-agenda-skip-function 'sm-agenda-skip-function)
+                    (org-agenda-span 'day)
+                    (org-deadline-warning-days 3)
+                    (org-agenda-time-grid '((daily today require-timed remove-match)
+                                            (800 2300)
+                                            " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+                    (org-agenda-show-log t)
+                    (org-agenda-log-mode-items '(clock closed))
+                    (org-agenda-buffer-name "Agenda")
+                    (org-super-agenda-groups
+                     '((:name "Log"
+                        :log t
+                        :order 1)
+                       (:name "Schedule"
+                        :time-grid t
+                        :order 2)
+                       (:name "Started"
+                        :todo "STRT"
+                        :order 3)
+                       (:name "For today"
+                        :and (:deadline today
+                              :not (:todo ("WAIT" "NEXT"))
+                              )
+                        :order 3)
+                       (:name "Next"
+                        :todo "NEXT"
+                        :order 4)
+                       (:name "Waiting"
+                        :todo "WAIT"
+                        :order 5)
+                       (:name "Overdue"
+                        :deadline past
+                        :order 6)
+                       (:name "Due soon"
+                        :deadline future
+                        :order 7)
+                       (:discard (:anything t))
+                       ))))
+                  (alltodo
+                   ""
+                   ((org-agenda-overriding-header "")
+                    (org-super-agenda-groups
+                     '(
+                       (:name "Unplanned"
+                        :and (:deadline nil
+                              :not (:todo "MTNG"))
+                        :order 8)
+                       (:discard (:anything t))
+                       )
+                     ))))
+                 )))
+
+
+#+END_SRC
+
+
 ***** My agenda
-#+BEGIN_SRC elisp
-(setq org-agenda-clockreport-parameter-plist '(:narrow 200 :maxlevel 5 :fileskip0 t :link nil :indent t :tcolumns 2))
+#+BEGIN_SRC elisp :results silent
+(setq! org-agenda-clockreport-parameter-plist '(:narrow 200 :maxlevel 5 :fileskip0 t :link nil :indent t :tcolumns 2))
 (after! org-agenda
   (add-to-list 'org-agenda-custom-commands
                '("p"  "My agenda"
@@ -468,20 +616,23 @@ change =org-directory=. It must be set before org loads!
                                '(
                                  (:name "Log"
                                   :log t
-                                  :order 5)
+                                  :order 6)
                                  (:name "Today"
                                   :time-grid t
                                   :date today
                                   :todo "TODAY"
                                   :scheduled today
-                                  :order 6)
-                                 (:name "Overdue - Not started"
-                                  :and (:deadline past
-                                        :not (:todo "STRT"))
-                                  :order 1)
+                                  :order 7)
                                  (:name "Overdue - Started"
                                   :and (:deadline past
                                         :todo "STRT")
+                                  :order 1)
+                                 (:name "Waiting"
+                                  :and (:todo "WAIT")
+                                  :order 5)
+                                 (:name "Overdue - Not started"
+                                  :and (:deadline past
+                                        :not (:todo "STRT"))
                                   :order 2)
                                  (:name "Scheduled"
                                   :and (:scheduled past
@@ -492,11 +643,9 @@ change =org-directory=. It must be set before org loads!
                                   :order 4)
                                  (:name "Due Soon"
                                   :deadline future
-                                  :order 7)
-                                 (:name "Unplanned"
-                                  :deadline nil
-                                  :order 9)
-                                 (:discard (:anything t))))))))))
+                                  :order 8)
+                                 (:discard (:anything t))
+                                 ))))))))
                   ;; (todo "" ((org-agenda-overriding-header "")
                   ;;           (org-super-agenda-groups '(
                   ;;                                      (:name "Unplanned"
@@ -508,49 +657,80 @@ change =org-directory=. It must be set before org loads!
 
 
 ** SUPER AGENDA
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! org-super-agenda
   :after org-agenda
   :init
-  (setq org-super-agenda-groups '())
-  (setq org-super-agenda-header-map (make-sparse-keymap))
+  (setq! org-super-agenda-groups '())
+  (setq! org-super-agenda-header-map (make-sparse-keymap))
   :config
   (org-super-agenda-mode)
   (message "org-super-agenda loaded"))
 #+END_SRC
 
+Enable auto fold for some agenda groups
+#+BEGIN_SRC elisp :results silent
+(defvar swapnilsm/org-super-agenda-auto-hide-groups
+  '("Due soon" "Unplanned" "Log"))
+
+(defun swapnilsm/org-super-agenda-origami-fold-default ()
+    "Fold certain groups by default in Org Super Agenda buffer."
+    (interactive)
+    (save-excursion
+      (unless  (buffer-narrowed-p)
+        (goto-char (point-min))
+        ;; Go to first section which is usually Schedule
+        (forward-line 2)
+        (cl-loop do (let ((line (string-trim (thing-at-point 'line t))))
+                      (if (member line swapnilsm/org-super-agenda-auto-hide-groups)
+                          (origami-close-node (current-buffer) (point))))
+                 while (origami-forward-fold-same-level (current-buffer) (point))))))
+
+(use-package! origami
+  :general (:keymaps 'org-super-agenda-header-map
+                     "TAB" #'origami-toggle-node
+                     "<tab>" #'origami-toggle-node
+                     "q" #'org-agenda-quit)
+  :hook ((org-agenda-mode . origami-mode)
+         (org-agenda-finalize . swapnilsm/org-super-agenda-origami-fold-default)))
+#+END_SRC
+
+#+RESULTS:
+
 ** AGENDA PROPERTY
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! org-agenda-property
   :after org-agenda
   :config
-  (setq org-agenda-property-list '("NAME")
+  (setq! org-agenda-property-list '("NAME")
         org-agenda-property-position 'where-it-fits))
 #+END_SRC
+
 ** POMODORO
-#+BEGIN_SRC elisp
-(use-package! org-pomodoro
-  :after org-agenda
-  :init
-  (setq org-pomodoro-finished-sound "~/.doom.d/sounds/pomodoro-finished-sound.wav"))
+#+BEGIN_SRC elisp :results silent
+;; (use-package! org-pomodoro
+;;   :after org-agenda
+;;   :init
+;;   (setq! org-pomodoro-finished-sound "~/.doom.d/sounds/pomodoro-finished-sound.wav"))
 
 #+END_SRC
+
 ** AUTO CLOCKOUT
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! org-clock
- (setq org-clock-auto-clockout-timer 1800)
+ (setq! org-clock-auto-clockout-timer 1800)
  (org-clock-auto-clockout-insinuate))
 #+END_SRC
 
 ** COPY LINK AT POINT
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (map! :localleader
       :map org-mode-map
       "ly" #'link-hint-copy-link-at-point
       )
 #+END_SRC
 ** INSERT CURRENT ORG TIMER
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm-insert-current-org-timer ()
   (interactive)
   (save-excursion
@@ -568,7 +748,7 @@ change =org-directory=. It must be set before org loads!
 #+END_SRC
 
 ** INSERT CURRENT DATE
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm-current-date ()
   (format-time-string "%B %e, %Y"))
 
@@ -582,7 +762,7 @@ change =org-directory=. It must be set before org loads!
 #+END_SRC
 
 ** INSERT UPDATE
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm/insert-update ()
   "Insert a new line just after the properties drawer of current heading starting with today's date."
   (interactive)
@@ -594,12 +774,12 @@ change =org-directory=. It must be set before org loads!
 #+END_SRC
 
 ** GOOGLE CALENDAR
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; (use-package! org-gcal
 ;;   :after org-agenda
 ;;   :init
-;;   (setq plstore-cache-passphrase-for-symmetric-encryption t)
-;;   (setq org-gcal-client-id "client-id"
+;;   (setq! plstore-cache-passphrase-for-symmetric-encryption t)
+;;   (setq! org-gcal-client-id "client-id"
 ;;         org-gcal-client-secret "client-secret"
 ;;         org-gcal-fetch-file-alist '(
 ;;                                     ("swapnilsm@gmail.com" . "~/schedule.org")
@@ -609,39 +789,39 @@ change =org-directory=. It must be set before org loads!
 ;;   )
 #+END_SRC
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; (use-package! org-caldav
 ;;   :after org-roam
 ;;   :config
-;;   (setq org-caldav-url 'google)
-;;   (setq org-caldav-calendar-id "swapnilsm@google.com")
-;;   (setq org-caldav-inbox "~/calendar.org")
-;;   (setq org-icalendar-timezone "Asia/Kolkata")
-;;   (setq org-caldav-oauth2-client-id "client-id")
-;;   (setq org-caldav-oauth2-client-secret "client-secret"))
+;;   (setq! org-caldav-url 'google)
+;;   (setq! org-caldav-calendar-id "swapnilsm@google.com")
+;;   (setq! org-caldav-inbox "~/calendar.org")
+;;   (setq! org-icalendar-timezone "Asia/Kolkata")
+;;   (setq! org-caldav-oauth2-client-id "client-id")
+;;   (setq! org-caldav-oauth2-client-secret "client-secret"))
 #+END_SRC
 ** ORG PANDOC IMPORT
 *** IMPORT
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! org-pandoc-import :after org)
 #+END_SRC
 
 ** PRESENTATION
 Set Org Reveal theme to "league"
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! org-re-reveal
-  (setq org-re-reveal-theme "league"))
+  (setq! org-re-reveal-theme "league"))
 #+END_SRC
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm-org-present-start ()
   (mixed-pitch-mode 0)
   (swapnilsm/clear-line-number-style)
   (writeroom-mode 1)
-  (org-present-big)
+  ;; (org-present-big)
   (org-display-inline-images)
   (org-present-hide-cursor)
-  (org-present-read-only)
+  ;; (org-present-read-only)
   (evil-force-normal-state)
   (set-face-attribute 'header-line nil :height 1000)
   ;; Set a blank header line string to create blank space at the top
@@ -651,9 +831,9 @@ Set Org Reveal theme to "league"
   (mixed-pitch-mode 1)
   (swapnilsm/set-line-number-style)
   (writeroom-mode 0)
-  (org-present-small)
+  ;; (org-present-small)
   (org-present-show-cursor)
-  (org-present-read-write)
+  ;; (org-present-read-write)
   (org-remove-inline-images)
   (set-face-attribute 'header-line nil :height 150)
   ;; Set a blank header line string to create blank space at the top
@@ -667,6 +847,9 @@ Set Org Reveal theme to "league"
   ;; Fold the children
   (org-show-children))
 
+#+END_SRC
+
+#+BEGIN_SRC  elisp
 ;; Install visual-fill-column for centered text
 (use-package! visual-fill-column
   :after org)
@@ -675,7 +858,7 @@ Set Org Reveal theme to "league"
 (use-package! writeroom-mode
   :after visual-fill-column
   :config
-  (setq writeroom-width 60
+  (setq! writeroom-width 60
         writeroom-fullscreen-effect nil))
 
 (use-package! org-present
@@ -698,29 +881,26 @@ Set Org Reveal theme to "league"
   (add-hook! 'org-present-after-navigate-functions 'sm-org-present-prepare-slide))
 #+END_SRC
 
-#+RESULTS:
-: t
-
 ** SUPERSTAR
 Set custom headline bullets
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! org-superstar
   :config
-  (setq org-superstar-headline-bullets-list '("☯" "✸" "✿" "✜")))
+  (setq! org-superstar-headline-bullets-list '("☯" "✸" "✿" "✜")))
 
 #+END_SRC
 
 ** EXPORT
 Perform modifications before export
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! ox
   :config
   (add-to-list 'org-export-filter-link-functions 'swapnilsm/convert-local-to-cs))
 #+END_SRC
 
 Specific export directories for different projects
-#+BEGIN_SRC elisp
-(setq org-publish-project-alist
+#+BEGIN_SRC elisp :results silent
+(setq! org-publish-project-alist
       '(
         ("roam-files"
          :base-directory "~/roam-files/"
@@ -731,45 +911,45 @@ Specific export directories for different projects
 #+END_SRC
 
 * EXPAND REGION
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (map! :nv "C-," #'er/expand-region)
 #+END_SRC
 
 * BEACON
-#+BEGIN_SRC elisp
-(use-package! beacon
-  :config (beacon-mode))
+#+BEGIN_SRC elisp :results silent
+;; (use-package! beacon
+;;   :config (beacon-mode))
 #+END_SRC
 
 * DIMMER
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! dimmer
   :config
-  (setq dimmer-fraction 0.50)
+  (setq! dimmer-fraction 0.50)
   (dimmer-mode)
   )
 #+END_SRC
 
 * AUTO REVERT
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (global-auto-revert-mode 1)
 #+END_SRC
 * HACKS
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! dired
   :init
   (when (string= system-type "darwin")
-    (setq dired-use-ls-dired nil))
+    (setq! dired-use-ls-dired nil))
   :config
   (map! :map dired-mode-map :desc "Easy key for directory-up" :n "h" #'dired-up-directory)
   (map! :map dired-mode-map :desc "Easy key for directory-down/open" :n "l" #'dired-find-file))
 #+END_SRC
 * LEETCODE
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! leetcode
   :init
-  (setq leetcode-save-solutions t)
-  (setq leetcode-directory "~/leetcode")
+  (setq! leetcode-save-solutions t)
+  (setq! leetcode-directory "~/leetcode")
   :commands (leetcode)
   :config
   ;; Set popup rule so that the problem buffer opens up on side.
@@ -777,28 +957,28 @@ Specific export directories for different projects
   )
 #+END_SRC
 * PYTHON
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! python
-  (setq python-shell-interpreter "python3")
-  (setq python-shell-completion-native-enable nil))
+  (setq! python-shell-interpreter "python3")
+  (setq! python-shell-completion-native-enable nil))
 #+END_SRC
 * COMMAND LOG MODE
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! command-log-mode
   :commands (command-log-mode))
 #+END_SRC
 * PROTOBUF MODE
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; (use-package! protobuf-mode)
 #+END_SRC
 * ORG ROAM
 ** ORG ROAM
-#+BEGIN_SRC elisp
-  (setq org-roam-database-connector 'sqlite3)
+#+BEGIN_SRC elisp :results silent
+  ;; (setq! org-roam-database-connector 'sqlite3)
   (use-package! org-roam
     :after org-agenda
     :config
-    (setq org-roam-completion-everywhere nil)
+    (setq! org-roam-completion-everywhere nil)
     (message "org-roam loaded")
     (sm/refresh-agenda-list)
     (map! :leader
@@ -813,23 +993,23 @@ Specific export directories for different projects
                            "#+TITLE: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+FILETAGS: \n")
         :unnarrowed t)
        ("i" "interview notes" plain (file "~/roam-files/templates/interview-note-template.org")
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+OPTIONS: toc:nil ^:nil\n#+STARTUP: overview\n#+FILETAGS: Interview\n")
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+OPTIONS: toc:nil ^:nil\n#+STARTUP: overview\n#+FILETAGS: INTERVIEW\n")
         :unnarrowed t)
        ("d" "design" plain (file "~/roam-files/templates/design-template.org")
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}#+SHORT: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+STARTUP: show2levels\n#+FILETAGS: DESIGN\n\n")
         :unnarrowed t)
        ("p" "proposal" plain (file "~/roam-files/templates/proposal-template.org")
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+SHORT: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+STARTUP: show2levels\n#+FILETAGS: PROPOSAL\n")
         :unnarrowed t)
        ("P" "project" plain (file "~/roam-files/templates/project-note-template.org")
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+SHORT: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+STARTUP: show2levels\n#+FILETAGS: Project\n"))
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+SHORT: ${title}\n#+OPTIONS: toc:nil ^:nil\n#+STARTUP: show2levels\n#+FILETAGS: PROJECT\n"))
        )
      )
     )
 #+END_SRC
 
 ** ORG ROAM UI
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! websocket
     :after org-roam)
 
@@ -840,27 +1020,28 @@ Specific export directories for different projects
 ;;         if you don't care about startup time, use
 ;;  :hook (after-init . org-roam-ui-mode)
     :config
-    (setq org-roam-ui-sync-theme t
+    (setq! org-roam-ui-sync-theme t
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 #+END_SRC
 * UNDO TREE
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; (use-package! undo-tree
 ;;   :hook (evil-local-mode . 'turn-on-undo-tree-mode))
 #+END_SRC
 * VTERM
 Enable kill previous word with Meta-Backspace
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (map! :after vterm
       :map vterm-mode-map
-      :ni "M-<backspace>" #'vterm-send-C-w)
+      :ni "M-<backspace>" #'vterm-send-meta-backspace)
 #+END_SRC
+
 * ESHELL
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; Set history size
-(setq eshell-history-size 10000)
+(setq! eshell-history-size 10000)
 
 ;; Aliases
 (set-eshell-alias!
@@ -868,34 +1049,57 @@ Enable kill previous word with Meta-Backspace
 #+END_SRC
 * EAT
 Yet another terminal emulator for Emacs
-#+BEGIN_SRC elisp
-(use-package! eat)
+#+BEGIN_SRC elisp :results silent
+(use-package! eat
+  :config
+  (setq! eat-kill-buffer-on-exit t)
+  (setq! eat-term-name "xterm-256color"))
+
 #+END_SRC
+
+Update the key bindings for eat.
+#+BEGIN_SRC elisp :results silent
+(map! :after eat
+      :leader
+      :desc "Open eat" :ni "ot" #'eat)
+
+(map! :after eat
+      :map eat-mode-map
+      :ni "M-<backspace>" #'eat-self-input
+      :ni "C-r"         #'eat-self-input
+      :ni "S-v"         #'eat-self-input
+      :ni "s-1"        #'+workspace/switch-to-0
+      :ni "s-2"        #'+workspace/switch-to-1
+      :ni "s-3"        #'+workspace/switch-to-2
+      :ni "s-4"        #'+workspace/switch-to-3
+      )
+#+END_SRC
+
 * COMPANY
 Introduce delay before dropdown is shown
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (after! company
   :config
-  (setq company-idle-delay 1))
+  (setq! company-idle-delay 1))
 #+END_SRC
 * REQUEST
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! request)
 #+END_SRC
 * GOOGLE
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! google)
 #+END_SRC
 
 ** GOOGLE3
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! google3)
 (use-package! google3-mode)
 #+END_SRC
 
 ** FILE HANDLING
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! cs)
 
 (use-package! google3-ffap
@@ -906,21 +1110,21 @@ Introduce delay before dropdown is shown
   )
 (use-package! rotate-among-files
   :config
-  (setq google-rotate-directories '("public" "proto" "internal" "java" "javatests" "testdata")))
+  (setq! google-rotate-directories '("public" "proto" "internal" "java" "javatests" "testdata")))
 #+END_SRC
 
 ** REFERENCE, SEARCH, CORRECTION AND COMPLETION
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm/ivy-cs--full-path (fn &rest args)
   ;; Replace default google depot path with account-security workspace for eglot to work.
   (s-replace "/google/src/head/depot" "/google/src/cloud/swapnilsm/account-security" (apply fn args)))
 
 (use-package! ivy-cs
   :config
-  (setq ivy-dynamic-exhibit-delay-ms 250)
-  (setq ivy-cs--extra-args "--nostats --color=never")
-  (setq cs-program "csearch")
+  (setq! ivy-dynamic-exhibit-delay-ms 250)
+  (setq! ivy-cs--extra-args "--nostats --color=never")
+  (setq! cs-program "csearch")
   (advice-add 'ivy-cs--full-path :around #'sm/ivy-cs--full-path))
 
 ;; (use-package! google3-quickrun)
@@ -932,10 +1136,10 @@ Introduce delay before dropdown is shown
 (use-package! google3-eglot
   :after google
   :init
-  (setq google3-eglot-ciderlsp-binary "~/bin/ciderlsp")
-  (setq eglot-connect-timeout 30)
+  (setq! google3-eglot-ciderlsp-binary "~/bin/ciderlsp")
+  (setq! eglot-connect-timeout 30)
   :config
-  (setq eglot-sync-connect 0)
+  (setq! eglot-sync-connect 0)
   ;; Customizable via `completion-category-overrides'.
   (when (assoc 'flex completion-styles-alist)
     (add-to-list 'completion-category-defaults '(eglot (styles flex basic))))
@@ -946,7 +1150,7 @@ Introduce delay before dropdown is shown
      (concat "file://" (if (eq system-type 'windows-nt) "/")
              (string-remove-prefix "/Volumes" (file-truename path)))
      url-path-allowed-chars))
-  (setq eldoc-message-commands (make-vector
+  (setq! eldoc-message-commands (make-vector
                                 eldoc-message-commands-table-size 0))
   (define-key eglot-mode-map [remap display-local-help] nil))
 
@@ -999,12 +1203,12 @@ Introduce delay before dropdown is shown
 
 ** FIG
 
-#+BEGIN_SRC elisp
-(setq vc-hg-program "chg")
-(setq fig--hg-executable "chg")
-(setq fig-hg-executable "chg")
+#+BEGIN_SRC elisp :results silent
+(setq! vc-hg-program "chg")
+(setq! fig--hg-executable "chg")
+(setq! fig-hg-executable "chg")
 (use-package! vc-hgcmd
-  :config (setq vc-handled-backends '(Hgcmd)))
+  :config (setq! vc-handled-backends '(Hgcmd)))
 (use-package! vc-defer
   :config
   (add-to-list 'vc-defer-backends 'Hg)
@@ -1016,10 +1220,10 @@ Introduce delay before dropdown is shown
 
 ** BUILD
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! google3-build
   :config
-  (setq google3-build-target-method 'blaze))
+  (setq! google3-build-target-method 'blaze))
 (use-package! google3-build-mode
   :mode "\\BUILD$")
 (use-package! google3-build-cleaner)
@@ -1029,10 +1233,10 @@ Introduce delay before dropdown is shown
 (use-package! iblaze-latest
   :after google3-build
   :config
-  ;; (setq google3-build-command "blaze")
-  (setq google3-build-command "iblaze -iblaze_nocitc_watch_all -iblaze_interrupt_on_change")
+  ;; (setq! google3-build-command "blaze")
+  (setq! google3-build-command "iblaze -iblaze_nocitc_watch_all -iblaze_interrupt_on_change")
   (add-hook 'compilation-mode-hook 'iblaze-latest-mode)
-  (setq compilation-scroll-output t))
+  (setq! compilation-scroll-output t))
 ;; (use-package! google3-build-mode-company
 ;;   :config
 ;;   (add-to-list 'company-backends 'company-capf))
@@ -1040,7 +1244,7 @@ Introduce delay before dropdown is shown
 
 ** IMPORTS AND INCLUDES
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! google-imports)
 (use-package! google-imports-iwyu)
 (use-package! clang-include-fixer)
@@ -1050,7 +1254,7 @@ Introduce delay before dropdown is shown
 
 ** CODING HELP AKA SNIPPETS
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; (use-package! google-yasnippets
 ;;   :config
 ;;   (google-yasnippets-load))
@@ -1059,7 +1263,7 @@ Introduce delay before dropdown is shown
 #+END_SRC
 
 ** ENABLE GOOGLE3 AUTOGEN
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; (use-package! google-codemaker
 ;;   :config (google-codemaker-auto-mode 1))
 #+END_SRC
@@ -1067,27 +1271,27 @@ Introduce delay before dropdown is shown
 ** LANGUAGE
 *** PROTOBUF
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! protobuf-mode)
 (use-package! protobuffer
-  :config (setq protobuffer-format-before-save t))
+  :config (setq! protobuffer-format-before-save t))
 #+END_SRC
 
 *** CC
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! google-cc-extras)
 (use-package! google-diformat)
 #+END_SRC
 
 *** DREMEL
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; (use-package! sql-dremel)
 #+END_SRC
 
 *** FIG
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! fig
   :config
   (map! :map fig-status-mode-map
@@ -1109,28 +1313,28 @@ Introduce delay before dropdown is shown
 
 *** JAVA
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! google-java-format)
 (use-package! java-imports
   :config
-  (setq java-imports-save-buffer-after-import-added nil)
+  (setq! java-imports-save-buffer-after-import-added nil)
   (add-hook! 'java-mode-hook 'java-imports-scan-file))
 #+END_SRC
 
 *** PYTHON
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! google-pyformat)
 #+END_SRC
 
 *** SOY
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! soy-mode)
 #+END_SRC
 
 *** SHX
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; (use-package! shx)
 #+END_SRC
 
@@ -1141,8 +1345,8 @@ Introduce delay before dropdown is shown
 
 *** STYLE
 
-#+BEGIN_SRC elisp
-(setq frame-title-format
+#+BEGIN_SRC elisp :results silent
+(setq! frame-title-format
   '("" (:eval (save-match-data
                 (if (string-match
                      "^/google/src/cloud/[^/]+/\\([^/]+\\)/"
@@ -1155,7 +1359,7 @@ Introduce delay before dropdown is shown
 *** EDIFF
 
 ediff press d to add both variants
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun ediff-copy-both-to-C ()
   (interactive)
   (ediff-copy-diff ediff-current-difference nil 'C nil
@@ -1165,28 +1369,28 @@ ediff press d to add both variants
 (defun add-d-to-ediff-mode-map () (define-key ediff-mode-map "d" 'ediff-copy-both-to-C))
 #+END_SRC
 Don't let ediff open a new frame
-#+BEGIN_SRC elisp
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+BEGIN_SRC elisp :results silent
+(setq! ediff-window-setup-function 'ediff-setup-windows-plain)
 #+END_SRC
 
 ** FORMATTING
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (set-formatter! 'google-diformat-clang-formatter #'google-diformat-clang-format-changed :modes '(c-mode c++-mode))
 (set-formatter! 'google-diformat-python-formatter #'google-diformat-pyformat-changed :modes '((python-mode (not (eq major-mode 'google3-build-mode)))))
 (set-formatter! 'google-diformat-java-formatter #'google-diformat-google-java-format-changed :modes '(java-mode))
 (set-formatter! 'google-markdown-formatter #'google-mdformat :modes '(markdown-mode))
-(setq +format-on-save-enabled-modes '(c-mode c++-mode python-mode markdown-mode typescript typescript-mode))
+(setq! +format-on-save-enabled-modes '(c-mode c++-mode python-mode markdown-mode typescript typescript-mode))
 #+END_SRC
 
 ** EDIFF
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! google-ediff)
 #+END_SRC
 
 ** LINKS & DOCUMENTATION
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun sm/org-dwim-at-point (fn &rest args)
   ;; First evaluate open-at-points function before running +org/dwim-at-point
   (unless (run-hook-with-args-until-success 'org-open-at-point-functions)
@@ -1207,7 +1411,7 @@ Don't let ediff open a new frame
 
 ** Buganizer
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! org-buganizer
   :after google
   :hook ((org-mode . org-buganizer-mode)))
@@ -1215,7 +1419,7 @@ Don't let ediff open a new frame
 
 ** CUSTOM FUNCTIONS
 *** Insert bug number from buganizer
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defvar swapnilsm/insert-bug-cache nil)
 (defun swapnilsm/clear-bug-cache ()
     "Clear bug cache"
@@ -1231,7 +1435,7 @@ Don't let ediff open a new frame
     (insert (car (s-split-up-to "\s" b 1)))))
 #+END_SRC
 *** Safe shutdown
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun server-shutdown ()
   "Save buffers, Quit, and Shutdown (kill) server"
   (interactive)
@@ -1239,29 +1443,29 @@ Don't let ediff open a new frame
   (kill-emacs))
 #+END_SRC
 *** Fig - sync all
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun swapnilsm/fig-sync-all ()
   (interactive)
   (fig--hg-run-with-editor "sync" `(,@(fig--merge-tool-args) "--all")))
 #+END_SRC
 *** CS-Browse-Copy
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun swapnilsm/cs-browse-copy ()
   (interactive)
   (cs-browse 1))
 #+END_SRC
 
 *** Workspace build cleaner
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun swapnilsm/google3-build-cleaner-workspace ()
   (interactive)
   (google3-build-cleaner--run "-c=default"))
 #+END_SRC
 
 *** Convert local links to CS
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; Define the replacements for sections in the local path
-(setq local-to-cs-map
+(setq! local-to-cs-map
       '(("file:.*/google3/" . "http://cs/f:google3/")
         ("::\\(.*\\)\\]\\[" . " \"\\1\"][")
         ("::" . "")))
@@ -1280,7 +1484,7 @@ Don't let ediff open a new frame
 #+END_SRC
 
 ** HOOKS
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (add-hook! c++-mode
   (add-hook! 'before-save-hook :local :append #'google-clang-format-file nil :local))
 (add-hook! typescript-mode
@@ -1304,15 +1508,19 @@ Don't let ediff open a new frame
 (add-hook! 'ediff-keymap-setup-hook :append #'add-d-to-ediff-mode-map)
 (add-hook! 'after-init-hook :append #'global-company-mode)
 (global-set-key (kbd "<f5>") #'company-complete)
-(add-hook 'org-after-todo-state-change-hook #'org-save-all-org-buffers)
-(add-hook 'org-clock-out-hook #'org-save-all-org-buffers)
+
+;; (defun swapnilsm/on-agenda-update ()
+;;   (org-save-all-org-buffers)
+;;   (org-ql-view-refresh))
+;; (add-hook 'org-after-todo-state-change-hook #'swapnilsm/on-agenda-update)
+;; (add-hook 'org-clock-out-hook #'swapnilsm/on-agenda-update)
 #+END_SRC
 ** NECESSARY RATHER THAN USING DOOM AUTO-REVERT MODE TO ENABLE EGLOT-RECONNECT.
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (global-auto-revert-mode t)
 #+END_SRC
 ** KEYMAP
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (map!
  (:leader
    :desc "" :nv "r" nil  ;; Unset reload bindings
@@ -1365,6 +1573,7 @@ Don't let ediff open a new frame
      :desc "rebasing"                :n "r" #'fig-rebase-popup
      :desc "mailing"                 :n "R" #'fig-mail-popup
      :desc "reverting"               :n "V" #'fig-revert-popup
+     :desc "listing"                 :n "l" #'fig-citc
      :desc "annotate blame"          :n "b" #'g4-annotate)
    (:prefix ("r" . "run")
      :desc "build-cleaner workspace" :n "c" #'swapnilsm/google3-build-cleaner-workspace
@@ -1383,41 +1592,43 @@ Don't let ediff open a new frame
 (map! "M-f" #'swiper)
 #+END_SRC
 
+#+RESULTS:
+
 ** HACKS
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; (load "/usr/share/google-emacs/site-lisp/emacs-google-config/third_party/elisp/flymake/flymake.el")
 ;; (defun project-root (p)  (car (project-roots p)))
 #+END_SRC
 
 ** SPEED UP FILE OPENS
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (remove-hook 'find-file-hook 'p4-update-status)
 (remove-hook 'find-file-hook 'google-load-p4-if-useful-hook)
 #+END_SRC
 
 ** EXPAND REGION
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (map! :nv "C-," #'er/expand-region)
 #+END_SRC
 
 ** PROJECTILE
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! projectile
   :hook
   (after-init . projectile-mode)
   :init
-  (setq projectile-known-projects-file "~/known-projects-file.eld"
+  (setq! projectile-known-projects-file "~/known-projects-file.eld"
         projectile-track-known-projects-automatically nil)
   :config
   ;; Do not cleanup non-existing projects due to expired gcert
   (remove-hook! 'kill-emacs-hook #'doom-cleanup-project-cache-h)
   (add-to-list 'projectile-project-root-files-bottom-up "OWNERS")
-  (setq projectile-hg-command "find . -type f | cut -c3- | tr '\\n' '\\0'"))
+  (setq! projectile-hg-command "find . -type f | cut -c3- | tr '\\n' '\\0'"))
 #+END_SRC
 
 ** DATE/TIME/CALENDAR
 *** Date
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (defun swapnilsm/insert-current-date ()
   (interactive)
   (insert (calendar-date-string (calendar-current-date) nil 1)))
@@ -1426,14 +1637,14 @@ Don't let ediff open a new frame
        :desc "Insert current date" :ni "d" #'swapnilsm/insert-current-date))
 #+END_SRC
 *** Time/Timer
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (map! :leader
       (:prefix "i"
        :desc "Insert time elapsed(Timer)" :nvi "t"  #'org-timer))
 #+END_SRC
 
 * Pocket Reader
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! pocket-reader
   :config
   (map! :map pocket-reader-mode-map
@@ -1451,21 +1662,161 @@ Don't let ediff open a new frame
 * Atomic Chrome / Ghost Text
 Edit browser text within Emacs and that too live
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 (use-package! atomic-chrome)
 #+END_SRC
 
 
 * Test
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
 ;; built-in `project' on 26+
-(setq doom-modeline-project-detection 'project)
+(setq! doom-modeline-project-detection 'project)
 ;; or `find-in-project' if it's installed
-(setq doom-modeline-project-detection 'ffip)
-(setq find-file-visit-truename nil)
+(setq! doom-modeline-project-detection 'ffip)
+(setq! find-file-visit-truename nil)
 #+END_SRC
 
 * GC
-#+BEGIN_SRC elisp
-(setq garbage-collection-messages t)
+#+BEGIN_SRC elisp :results silent
+(setq! garbage-collection-messages nil)
+#+END_SRC
+
+* Workspaces
+Show the workspace tab bar always when the minibuffer is not in use.
+#+BEGIN_SRC elisp :results silent
+(after! persp-mode
+  (defun display-workspaces-in-minibuffer ()
+    (with-current-buffer " *Minibuf-0*"
+      (erase-buffer)
+      (insert (+workspace--tabline))))
+  (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
+  (+workspace/display))
+#+END_SRC
+
+* Pophint
+Jump to location using hints
+#+begin_src elisp
+;; (use-package! pophint)
+#+end_src
+
+* Evil overrides
+Override the evil keybindings
+#+BEGIN_SRC elisp :results silent
+(map! :map evil-org-agenda-mode-map
+      :nmv "s" #'evil-avy-goto-word-or-subword-1)
+
+(map!
+     :nvm "s" #'evil-avy-goto-word-or-subword-1)
+#+END_SRC
+
+#+RESULTS:
+
+* Subword mode
+Enable subword mode
+#+BEGIN_SRC elisp :results silent
+(subword-mode 1)
+#+END_SRC
+
+* Embark
+#+BEGIN_SRC elisp :results silent
+(use-package! embark
+  :config
+   (map! :g "C-." #'embark-act))
+#+END_SRC
+
+* Avy Embark
+Enable Avy and Embark integration
+#+BEGIN_SRC elisp :results silent
+;; (defun avy-action-embark (pt)
+;;   (unwind-protect
+;;       (save-excursion
+;;         (goto-char pt)
+;;         (embark-act))
+;;     (select-window
+;;      (cdr (ring-ref avy-ring 0))))
+;;   t)
+;; (after! avy
+;;   (setf (alist-get ?. avy-dispatch-alist) 'avy-action-embark))
+#+END_SRC
+
+* GPTel
+#+BEGIN_SRC elisp :results silent
+(use-package! gptel
+  :after org
+  :hook
+  ('gptel-post-stream-hook . 'gptel-auto-scroll)
+  ('gptel-post-response-hook . 'gptel-end-of-response)
+  :config
+  (setq! gptel-default-mode #'org-mode)
+  (set-popup-rule! "^\\*ChatGPT\\*$"  :side 'bottom :size 0.3 :select t :modeline nil)
+  (map! :map gptel-mode-map
+        :mni "s-<return>" #'gptel-send
+        :mni "s-RET"    #'gptel-send)
+  (map! :leader
+        (:prefix "o"
+         :desc "Open GPTel" :vni "c" #'gptel
+         :desc "Open GPTel menu" :vni "C" #'gptel-menu)))
+#+END_SRC
+
+#+BEGIN_SRC elisp :results silent
+(use-package! gptel-extensions
+  :after gptel)
+#+END_SRC
+
+
+* Authinfo
+#+BEGIN_SRC elisp :results silent
+;; (setq! auth-sources (append auth-sources '("~/.authinfo")))
+(setq! auth-sources
+    '((:source "~/.authinfo")))
+#+END_SRC
+
+* GCMH
+#+BEGIN_SRC elisp :results silent
+(use-package! gcmh
+  :config
+  (setq! gcmh-high-cons-threshold 1073741824)
+  (gcmh-mode 1))
+#+END_SRC
+
+* Calendar
+#+begin_src elisp
+(defun swapnilsm/sync-calendar ()
+  (interactive)
+  (shell-command "cd ~/Projects/python-samples/calendar/quickstart && ~/Projects/python-samples/calendar/quickstart/calendar/bin/python3 ~/Projects/python-samples/calendar/quickstart/q.py"))
+#+end_src
+
+* Hyperbole
+#+BEGIN_SRC elisp :results silent
+;; (use-package! hyperbole
+;;   :config
+;;   (hyperbole-mode))
+#+END_SRC
+
+* Skip shell confirmation
+#+BEGIN_SRC elisp :results silent
+(setq! org-confirm-shell-link-function nil)
+#+END_SRC
+
+* Org web tools
+#+BEGIN_SRC elisp :results silent
+(use-package! org-web-tools)
+#+END_SRC
+
+* Org edna
+#+BEGIN_SRC elisp :results silent
+(use-package! org-edna
+  :config
+  (setq! org-edna-use-inheritance t)
+  (org-edna-mode))
+#+END_SRC
+
+* kmonad
+#+BEGIN_SRC elisp :results silent
+(use-package! kbd-mode)
+#+END_SRC
+
+* memory usage
+#+BEGIN_SRC elisp :results silent
+(use-package! memory-usage)
 #+END_SRC
