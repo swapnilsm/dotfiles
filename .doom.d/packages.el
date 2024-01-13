@@ -55,11 +55,13 @@
 (package! beacon)
 (package! dimmer)
 ;; (package! org-fancy-priorities)
-(package! org
-  ;; :pin "d6f3aed7b1b01df7b092a47099205847b34fdd37"
-  ;; :pin "806abc5a2"
-  ;; :pin "ca873f7"
-  :built-in nil)
+;; (package! org
+;;   ;; :pin "d6f3aed7b1b01df7b092a47099205847b34fdd37"
+;;   ;; :pin "806abc5a2"
+;;   ;; :pin "ca873f7"
+;;   ;; :pin "6d85f851b3cf47abaf5197fe07bd793b5cf0d5dc"
+;;   ;; :pin "cdd73bc"
+;;   :built-in nil)
 (package! org-super-agenda)
 (package! org-agenda-property)
 ;; (package! emacs-aio :recipe
@@ -86,6 +88,7 @@
 (package! protobuf-mode)
 (package! ox-gfm)
 (package! org-ql)
+(package! helm-org-ql)
 (package! ox-pandoc
   :recipe (:repo "swapnilsm/ox-pandoc") :pin "9691f4bd497cc53a52ce4e810a364cbc84592836")
 (package! request
@@ -173,13 +176,31 @@
 ;; (package! company-box)
 ;; (package! sql-dremel :built-in 'prefer)
 
-(package! eat :recipe (:host codeberg :repo "akib/emacs-eat" :files ("*")))
+(package! eat :recipe (:host codeberg :repo "akib/emacs-eat" :files ("*.el" ("term" "term/*.el") "*.texi"
+    "*.ti" ("terminfo/e" "terminfo/e/*")
+    ("terminfo/65" "terminfo/65/*")
+    ("integration" "integration/*")
+    (:exclude ".dir-locals.el" "*-tests.el"))))
 (package! pocket-reader)
 (package! atomic-chrome)
 (package! writeroom-mode)
-(package! chatgpt
-  :recipe (:host github :repo "joshcho/ChatGPT.el" :files ("dist" "*.el")))
 (package! org-roam-ui)
 (package! oauth2)
 (package! emacsql-sqlite3)
-(package! consult-org-roam)
+;; (package! consult-org-roam)
+;; (package! pophint :recipe (:host github :repo "aki2o/emacs-pophint"))
+(package! evil-snipe :disable t)
+(package! avy-embark-collect)
+(package! gptel)
+(package! gptel-extensions
+  :recipe (:host github :repo "kamushadenes/gptel-extensions.el"))
+(package! gcmh
+  :recipe (:host github :repo "emacsmirror/gcmh"))
+(package! hyperbole)
+(package! org-web-tools)
+(package! org-edna)
+(package! origami)
+(package! kbd-mode
+  :recipe (:host github
+           :repo "kmonad/kbd-mode"))
+(package! memory-usage)
