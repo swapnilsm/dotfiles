@@ -2,7 +2,7 @@
 #+AUTHOR: Swapnil Mahajan (swapnilsm@)
 #+STARTUP: SHOWEVERYTHING
 #+OPTIONS: TOC:2
-#+PROPERTY: header-args:elisp
+#PROPERTY: header-args:elisp
 
 * TABLE OF CONTENTS :TOC:
 - [[#help][HELP]]
@@ -11,10 +11,16 @@
 - [[#appearance][APPEARANCE]]
   - [[#font][FONT]]
   - [[#theme][THEME]]
+  - [[#face-customizations][FACE CUSTOMIZATIONS]]
   - [[#splash-image][SPLASH IMAGE]]
-  - [[#titlebar---version-29][TITLEBAR - Version 29+]]
-  - [[#smooth-scrolling][Smooth scrolling]]
-  - [[#other][OTHER]]
+  - [[#titlebar][TITLEBAR]]
+  - [[#smooth-scrolling][SMOOTH SCROLLING]]
+  - [[#line-numbers][LINE NUMBERS]]
+  - [[#maximized-mode][MAXIMIZED MODE]]
+  - [[#margins][MARGINS]]
+  - [[#indentation][INDENTATION]]
+  - [[#emphasis-markers][EMPHASIS MARKERS]]
+  - [[#right-meta][RIGHT META]]
 - [[#org][ORG]]
   - [[#org-directory][ORG DIRECTORY]]
   - [[#capture-templates][CAPTURE TEMPLATES]]
@@ -36,11 +42,12 @@
   - [[#presentation][PRESENTATION]]
   - [[#superstar][SUPERSTAR]]
   - [[#export][EXPORT]]
+  - [[#column-view][COLUMN VIEW]]
 - [[#expand-region][EXPAND REGION]]
 - [[#beacon][BEACON]]
 - [[#dimmer][DIMMER]]
 - [[#auto-revert][AUTO REVERT]]
-- [[#hacks][HACKS]]
+- [[#dired][DIRED]]
 - [[#leetcode][LEETCODE]]
 - [[#python][PYTHON]]
 - [[#command-log-mode][COMMAND LOG MODE]]
@@ -73,11 +80,12 @@
   - [[#hooks][HOOKS]]
   - [[#necessary-rather-than-using-doom-auto-revert-mode-to-enable-eglot-reconnect][NECESSARY RATHER THAN USING DOOM AUTO-REVERT MODE TO ENABLE EGLOT-RECONNECT.]]
   - [[#keymap][KEYMAP]]
-  - [[#hacks-1][HACKS]]
+  - [[#hacks][HACKS]]
   - [[#speed-up-file-opens][SPEED UP FILE OPENS]]
   - [[#expand-region-1][EXPAND REGION]]
   - [[#projectile][PROJECTILE]]
   - [[#datetimecalendar][DATE/TIME/CALENDAR]]
+  - [[#playbook][PLAYBOOK]]
 - [[#pocket-reader][Pocket Reader]]
 - [[#atomic-chrome--ghost-text][Atomic Chrome / Ghost Text]]
 - [[#test][Test]]
@@ -98,6 +106,11 @@
 - [[#org-edna][Org edna]]
 - [[#kmonad][kmonad]]
 - [[#memory-usage][memory usage]]
+- [[#spell-checker][Spell checker]]
+- [[#avy][AVY]]
+- [[#device-tree][DEVICE TREE]]
+- [[#fontaine][FONTAINE]]
+- [[#auto-treesitter][Auto Treesitter]]
 
 * HELP
 
@@ -115,13 +128,14 @@ To get information about any of these functions/macros, move the cursor over
 the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
 This will open documentation for it, including demos of how they are used.
 
-You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+You can also try =gd= (or =C-c c d=) to jump to their definition and see how
 they are implemented.
 
 * ENABLE LEXICAL BINDING
 This section needs to be the first SRC block so that the comment appears at
 the top of the file generated.
-#+BEGIN_SRC elisp :results silent
+
+#BEGIN_SRC elisp :results silent
 ;; -*- lexical-binding: t; -*-
 #+END_SRC
 
@@ -130,7 +144,7 @@ Some functionality uses this to identify you, e.g. GPG configuration, email
 clients, file templates and snippets.
 #+BEGIN_SRC elisp :results silent
 (setq! user-full-name "Swapnil Mahajan"
-      user-mail-address "swapnilsm@google.com")
+      user-mail-address "swapnilsm@gmail.com")
 #+END_SRC
 
 * APPEARANCE
@@ -154,9 +168,9 @@ font string. You generally only need these two:
 ;; (setq! doom-font (font-spec :family "Monaco" :size 13))
 (setq! ns-use-thin-smoothing t)
 (setq! ns-antialias-text t)
-(setq! doom-font (font-spec :family "Iosevka Term" :size 17 :weight 'light))
-(setq! doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 19 :weight 'light))
-(setq! doom-big-font (font-spec :family "Iosevka Aile" :size 24 :weight 'light))
+;; (setq! doom-font (font-spec :family "Iosevka Term" :size 17 :weight 'light))
+;; (setq! doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 19 :weight 'light))
+;; (setq! doom-big-font (font-spec :family "Iosevka Aile" :size 24 :weight 'light))
 ;; (setq! doom-font (font-spec :family "Fira Code" :size 15 :weight 'light))
 ;; (setq! doom-variable-pitch-font (font-spec :family "Fira Code" :size 15 :weight 'light))
 ;; (setq! doom-font (font-spec :family "Source Code Pro" :size 15 :weight 'light))
@@ -165,19 +179,34 @@ font string. You generally only need these two:
 ;; (setq! doom-variable-pitch-font (font-spec :family "VictorMono Nerd Font Mono" :size 15 :weight 'regular))
 ;; (setq! doom-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
 ;; (setq! doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
-;; (setq! doom-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'regular))
-;; (setq! doom-variable-pitch-font (font-spec :family "JetBrains Mono NL" :size 15 :weight 'light))
-;; (setq! doom-big-font (font-spec :family "JetBrains Mono NL" :size 24 :weight 'regular))
+(setq! doom-font (font-spec :family "JetBrains Mono" :size 17 :weight 'light))
+(setq! doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 19 :weight 'thin))
+(setq! doom-big-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light))
 ;; (setq! doom-variable-pitch-font (font-spec :family "Google Sans" :weight 'regular))
 #+END_SRC
 
 Use variable pitch font for text and fixed pitch font for code blocks
 #+BEGIN_SRC elisp :results silent
-(use-package! mixed-pitch
-  :hook (text-mode . mixed-pitch-mode)
-  :config
-  (setq! mixed-pitch-set-height t)
-  (set-face-attribute 'variable-pitch nil :height 1.1))
+;; (use-package! mixed-pitch
+;;   :hook (text-mode . mixed-pitch-mode)
+;;   :config
+;;   (setq! mixed-pitch-set-height t)
+;;   (set-face-attribute 'variable-pitch nil :height 1.1 :font doom-variable-pitch-font))
+#+END_SRC
+
+#+BEGIN_SRC elisp :results silent
+(add-hook 'text-mode-hook #'variable-pitch-mode)
+
+(after! evil-org
+  ;; Make sure certain org faces use the fixed-pitch face when variable-pitch-mode is on
+  (set-face-attribute 'org-block nil :foreground 'unspecified :inherit 'fixed-pitch)
+  (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 #+END_SRC
 
 ** THEME
@@ -189,13 +218,32 @@ available. You can either set =doom-theme= or manually load a theme with the
 ;; (setq! doom-theme 'doom-snazzy)
 ;; (setq! doom-theme 'doom-dracula)
 ;; (setq! doom-theme 'doom-old-hope)
-(setq! doom-theme 'doom-one)
+;; (setq! doom-theme 'doom-one)
+;; (setq! doom-theme 'doom-moonlight)
+(setq! doom-theme 'doom-snazzy)
 #+END_SRC
 
-Change =link= face weight
+** FACE CUSTOMIZATIONS
+Set normal weights for org levels
 #+BEGIN_SRC elisp :results silent
-(custom-set-faces
- '(link ((t (:weight normal)))))
+(defun sm/disable-org-heading-weights ()
+  (set-face-attribute 'org-level-1 nil :weight 'normal)
+  (set-face-attribute 'org-level-2 nil :weight 'normal)
+  (set-face-attribute 'org-level-3 nil :weight 'normal))
+;; Because of some reason the following hook doesn't work. Hence after! org.
+;; (add-hook! 'doom-after-modules-config-hook #'sm/disable-org-heading-weights)
+(after! org
+  (sm/disable-org-heading-weights))
+#+END_SRC
+
+Set normal weight for links
+#+BEGIN_SRC elisp :results silent
+(defun sm/disable-link-weights ()
+  (set-face-attribute 'link nil :weight 'normal))
+;; Same reason as above
+;; (add-hook! 'doom-after-modules-config-hook #'sm/disable-link-weights)
+(after! org
+  (sm/disable-link-weights))
 #+END_SRC
 
 ** SPLASH IMAGE
@@ -204,17 +252,17 @@ Update the normal ASCII splash image on every startup
 (setq! fancy-splash-image "~/dotfiles/.doom.d/pictures/iron-man-splash.png")
 #+END_SRC
 
-** TITLEBAR - Version 29+
+** TITLEBAR
 Toggle title bar and rounded corners
 #+BEGIN_SRC elisp :results silent
 (add-to-list 'default-frame-alist '(undecorated . t))
 #+END_SRC
 
-** Smooth scrolling
+** SMOOTH SCROLLING
 #+BEGIN_SRC elisp :results silent
 (use-package! pixel-scroll
   :bind
-  ([remap evil-scroll-down]   . pixel-scroll-interpolate-down)
+  ([remap evil-scroll-down] . pixel-scroll-interpolate-down)
   ([remap evil-scroll-up] . pixel-scroll-interpolate-up)
   :custom
   (pixel-scroll-precision-interpolate-page t)
@@ -222,26 +270,29 @@ Toggle title bar and rounded corners
   (pixel-scroll-precision-mode 1))
 #+END_SRC
 
-** OTHER
+** LINE NUMBERS
 This determines the style of line numbers in effect. If set to =nil=, line
 numbers are disabled. For relative line numbers, set this to =relative=.
 #+BEGIN_SRC elisp :results silent
 (defun swapnilsm/set-line-number-style ()
-  (setq display-line-number-type 'relative
-        display-line-numbers 'relative
-        doom--line-number-style 'relative))
+  (interactive)
+  (setq display-line-numbers-type 'visual
+        display-line-numbers 'visual
+        doom--line-number-style 'visual))
 
 (defun swapnilsm/clear-line-number-style ()
-  (setq display-line-number-type nil
+  (interactive)
+  (setq display-line-numbers-type nil
         display-line-numbers nil
         doom--line-number-style nil))
 
-(swapnilsm/set-line-number-style)
+(swapnilsm/clear-line-number-style)
 #+END_SRC
 
+** MAXIMIZED MODE
 Start Emacs in maximized mode
 #+BEGIN_SRC elisp :results silent
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+END_SRC
 
 Ivy frame position
@@ -255,17 +306,47 @@ Truncate file name displayed in the modeline to truncate all except the project 
 (setq! doom-modeline-buffer-file-name-style 'truncate-except-project)
 #+END_SRC
 
-Disable BOLD faces for good
+** MARGINS
 #+BEGIN_SRC elisp :results silent
-(defun swapnilsm/disable-bold-faces ()
-  (interactive)
-  (mapc
-   (lambda (face)
-     (when (eq (face-attribute face :weight) 'bold)
-       (set-face-attribute face nil :weight 'normal)))
-   (face-list)))
+(defvar +text-mode-left-margin-width 3
+  "The `left-margin-width' to be used in `text-mode' buffers.")
 
-(add-hook 'doom-after-modules-config-hook 'swapnilsm/disable-bold-faces)
+(defun +setup-text-mode-left-margin ()
+  (when (and (derived-mode-p 'text-mode)
+             (eq (current-buffer) ; Check current buffer is active.
+                 (window-buffer (frame-selected-window))))
+    (setq left-margin-width (if display-line-numbers
+                                0 +text-mode-left-margin-width))
+    (set-window-buffer (get-buffer-window (current-buffer))
+                       (current-buffer))))
+#+END_SRC
+
+Apply the above configuration on multiple after hooks
+#+BEGIN_SRC elisp :results silent
+(add-hook 'window-configuration-change-hook #'+setup-text-mode-left-margin)
+(add-hook 'display-line-numbers-mode-hook #'+setup-text-mode-left-margin)
+(add-hook 'text-mode-hook #'+setup-text-mode-left-margin)
+(after! doom-modeline
+  (setq mode-line-right-align-edge 'right-fringe))
+#+END_SRC
+
+** INDENTATION
+Disable the org indentation
+#+BEGIN_SRC elisp :results silent
+;; (after! evil-org
+;;   (setq! org-startup-indented nil))
+#+END_SRC
+
+** EMPHASIS MARKERS
+Hide emphasis markers
+#+BEGIN_SRC elisp :results silent
+(after! evil-org
+  (setq! org-hide-emphasis-markers t))
+#+END_SRC
+** RIGHT META
+Use right option as meta
+#+BEGIN_SRC elisp :results silent
+(setq! mac-right-option-modifier 'meta)
 #+END_SRC
 
 * ORG
@@ -277,6 +358,7 @@ change =org-directory=. It must be set before org loads!
   :init
   (setq! org-directory "~/roam-files/")
   (setq! org-use-property-inheritance t)
+  (setq! org-tags-exclude-from-inheritance '("crypt" "PROJECT"))
   :commands (org-capture org-agenda)
   :config
   (message "Org mode loaded")
@@ -287,10 +369,10 @@ change =org-directory=. It must be set before org loads!
   ;;       org-clock-history-length 23
   ;;       org-clock-in-resume t)
   (setq! org-tags-column 0)
-  (setq! org-todo-keywords '((sequence "TODO(t)" "STRT(s)" "WAIT(w)" "HOLD(h)" "MTNG(m)" "NEXT(n)" "|" "DONE(d)" "KILL(k)")
+  (setq! org-todo-keywords '((sequence "TODO(t)" "STRT(s)" "WAIT(w)" "HOLD(h)" "MTNG(m)" "NEXT(n)" "SOMEDAY(o)" "|" "DONE(d)" "KILL(k)")
                              (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
                              (sequence "|" "OKAY(o)" "YES(y)" "NO(x)")))
-  (setq! org-todo-keywords-for-agenda '("NO" "YES" "OKAY" "[X]" "[?]" "[-]" "[ ]" "KILL" "DONE" "MTNG" "HOLD" "WAIT" "STRT" "TODO" "NEXT"))
+  (setq! org-todo-keywords-for-agenda '("NO" "YES" "OKAY" "[X]" "[?]" "[-]" "[ ]" "KILL" "DONE" "MTNG" "HOLD" "WAIT" "STRT" "TODO" "NEXT" "SOMEDAY"))
   ;; (setq! org-tag-alist '(
   ;;                       ("RESOURCE" . ?r)
   ;;                       ("DESIGN" . ?d)
@@ -321,6 +403,19 @@ change =org-directory=. It must be set before org loads!
 #+END_SRC
 
 ** CAPTURE TEMPLATES
+Custom function to optionally create task for the last captured resource
+#+BEGIN_SRC elisp :results silent
+(defun swapnilsm/optionally-capture-task-for-resource(ARG)
+  (when ARG
+      (org-capture-goto-last-stored)
+             (let* ((node (org-roam-node-at-point))
+                    (title (org-roam-node-title node))
+                    (id (org-roam-node-id node)))
+               (kill-new (format "[[id:%s][%s]]" id title))
+               (org-capture nil "T"))))
+
+#+END_SRC
+
 #+BEGIN_SRC elisp :results silent
 (after! org
   (use-package! doct
@@ -328,16 +423,33 @@ change =org-directory=. It must be set before org loads!
     (setq! org-capture-templates
           (doct '(("Todo" :keys "t"
                    :file "~/roam-files/20221104172849-todo.org"
-                   :headline "Inbox"
+                   :headline "Task inbox"
                    :prepend t
-                   :template ("* TODO %^{Description} "))
+                   :template ("* TODO %?"))
+                  ("Todo for Resource" :keys "T"
+                   :file "~/roam-files/20221104172849-todo.org"
+                   :headline "Task inbox"
+                   :prepend t
+                   :template ("* TODO %? %c"))
                   ("Interview" :keys "i"
                    :file "~/roam-files/20210920135449-interviews.org"
                    :headline "Tasks"
                    :prepend t
                    :template ("* TODO Interview %^{Name}%? [[[%^{My gHire Link}][My gHire]]]"
                               "DEADLINE: %^{Date}T"))
-                  ("Good read" :keys "r"
+                  ("Resource with task" :keys "r"
+                   :file "~/roam-files/20221104172849-todo.org"
+                   :headline "Resource inbox"
+                   :template ("* %^{Description} %^G")
+                   :hook (lambda() (org-id-get-create))
+                   :after-finalize (lambda() (swapnilsm/optionally-capture-task-for-resource t)))
+                  ("Resource w/o task" :keys "R"
+                   :file "~/roam-files/20221104172849-todo.org"
+                   :headline "Resource inbox"
+                   :template ("* %^{Description} %^G")
+                   :hook (lambda() (org-id-get-create))
+                   :after-finalize (lambda() (swapnilsm/optionally-capture-task-for-resource nil)))
+                  ("Good read" :keys "g"
                    :file "~/roam-files/20220725134226-good_reads.org"
                    :headline "Good Reads"
                    :prepend t
@@ -349,12 +461,13 @@ change =org-directory=. It must be set before org loads!
 ;; (after! org
 ;;   (use-package! ox-gfm))
 #+END_SRC
+
 ** ORG QL
 #+BEGIN_SRC elisp :results silent
 (use-package! org-ql
   :after org)
-;; (use-package! helm-org-ql
-;;   :after org-ql)
+(use-package! helm-org-ql
+  :after org-ql)
 #+END_SRC
 
 ** DEFAULT APPS
@@ -482,7 +595,7 @@ change =org-directory=. It must be set before org loads!
   (org-roam-node-find
    nil
    nil
-   (sm/org-roam-filter-by-tag "PROJECT")))
+   (lambda (node) (member "PROJECT" (org-roam-node-tags node)))))
 #+END_SRC
 
 *** Sensible defaults
@@ -554,7 +667,7 @@ change =org-directory=. It must be set before org loads!
                                             (800 2300)
                                             " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
                     (org-agenda-show-log t)
-                    (org-agenda-log-mode-items '(clock closed))
+                    (org-agenda-log-mode-items '(clock closed state))
                     (org-agenda-buffer-name "Agenda")
                     (org-super-agenda-groups
                      '((:name "Log"
@@ -813,43 +926,67 @@ Set Org Reveal theme to "league"
   (setq! org-re-reveal-theme "league"))
 #+END_SRC
 
+Function to be called on org-present start.
 #+BEGIN_SRC elisp :results silent
 (defun sm-org-present-start ()
-  (mixed-pitch-mode 0)
   (swapnilsm/clear-line-number-style)
-  (writeroom-mode 1)
-  ;; (org-present-big)
-  (org-display-inline-images)
-  (org-present-hide-cursor)
-  ;; (org-present-read-only)
   (evil-force-normal-state)
   (set-face-attribute 'header-line nil :height 1000)
+  (set-face-background 'header-line (face-background 'default))
+  (writeroom-mode 1)
   ;; Set a blank header line string to create blank space at the top
   (setq header-line-format " "))
+#+END_SRC
 
+Function to be called on org-present end.
+#+BEGIN_SRC elisp :results silent
 (defun sm-org-present-end ()
-  (mixed-pitch-mode 1)
-  (swapnilsm/set-line-number-style)
   (writeroom-mode 0)
-  ;; (org-present-small)
-  (org-present-show-cursor)
-  ;; (org-present-read-write)
-  (org-remove-inline-images)
+  (swapnilsm/set-line-number-style)
   (set-face-attribute 'header-line nil :height 150)
   ;; Set a blank header line string to create blank space at the top
   (setq header-line-format nil))
+#+END_SRC
 
+Function to be called on slide/page change.
+#+BEGIN_SRC elisp :results silent
 (defun sm-org-present-prepare-slide (buffer-name heading)
+  "Set up initial state of the presentation heading on load."
   ;; Show headlines only
   (org-overview)
   ;; Expand first headline
   (org-show-entry)
   ;; Fold the children
   (org-show-children))
+#+END_SRC
+
+#+BEGIN_SRC elisp :results silent
+(defun swapnilsm/inverted-mixed-pitch-mode (ARG)
+  "Inverted mixed-pitch-mode based on ARG."
+  (if (> ARG 0)
+      (setq mixed-pitch-set-height nil)
+    (setq mixed-pitch-set-height t))
+  (mixed-pitch-mode (- ARG)))
+#+END_SRC
+
+#+BEGIN_SRC elisp :results silent
+(defun swapnilsm/org-present-hide-cursor (ARG)
+  "Display or hide cursor based on ARG."
+  (if (> ARG 0)
+      (org-present-hide-cursor)
+    (org-present-show-cursor)))
+#+END_SRC
+
+#+BEGIN_SRC elisp :results silent
+(defun swapnilsm/display-inline-images (ARG)
+  "Display or hide the inline images based on ARG."
+  (if (> ARG 0)
+      (org-display-inline-images)
+    (org-remove-inline-images)))
 
 #+END_SRC
 
-#+BEGIN_SRC  elisp
+#+BEGIN_SRC elisp :results silent
 ;; Install visual-fill-column for centered text
 (use-package! visual-fill-column
   :after org)
@@ -858,8 +995,16 @@ Set Org Reveal theme to "league"
 (use-package! writeroom-mode
   :after visual-fill-column
   :config
-  (setq! writeroom-width 60
-        writeroom-fullscreen-effect nil))
+  (setq! writeroom-width 70
+        writeroom-fullscreen-effect nil
+        writeroom-added-width-left 0
+        writeroom-local-effects
+        '(
+          swapnilsm/inverted-mixed-pitch-mode
+          ;; swapnilsm/org-present-hide-cursor
+          swapnilsm/display-inline-images
+          ;; doom-big-font-mode
+          )))
 
 (use-package! org-present
   :after org
@@ -910,6 +1055,32 @@ Specific export directories for different projects
       )
 #+END_SRC
 
+** COLUMN VIEW
+Shorten issue title in column view
+#+BEGIN_SRC elisp :results silent
+(defun swapnilsm/shorten-text (text)
+  "Shorten the input TEXT to 50 characters and add ... if necessary."
+  (if (< (length text) 50)
+      text
+    (concat (substring text 0 47) "...")))
+
+(defun swapnilsm/column-value-transformer (column-title value)
+  (when (equal column-title "Issue Title")
+    (swapnilsm/shorten-text value)))
+#+END_SRC
+
+#+BEGIN_SRC elisp :results silent
+(setq! org-columns-modify-value-for-display-function #'swapnilsm/column-value-transformer)
+#+END_SRC
+
+#+BEGIN_SRC elisp :results silent
+(after! org
+  (map! :leader
+        :mode org-mode
+        :prefix ("d" . "dynamic-block")
+        :desc "Update dynamic block"  :ni "u" #'org-dblock-update))
+#+END_SRC
+
 * EXPAND REGION
 #+BEGIN_SRC elisp :results silent
 (map! :nv "C-," #'er/expand-region)
@@ -923,18 +1094,25 @@ Specific export directories for different projects
 
 * DIMMER
 #+BEGIN_SRC elisp :results silent
-(use-package! dimmer
-  :config
-  (setq! dimmer-fraction 0.50)
-  (dimmer-mode)
-  )
+;; (use-package! dimmer
+;;   :config
+;;   (setq! dimmer-fraction 0.50)
+;;   (dimmer-mode)
+;;   )
 #+END_SRC
 
 * AUTO REVERT
 #+BEGIN_SRC elisp :results silent
 (global-auto-revert-mode 1)
 #+END_SRC
-* HACKS
+
+Disable auto-revert for remote files.
+#+BEGIN_SRC elisp :results silent
+(setq! auto-revert-notify-exclude-dir-regexp "^\\(?:/\\(?:afs/\\|m\\(?:edia/\\|nt\\)\\|\\(?:ne\\|tmp_mn\\)t/\\)\\)\\|^/[^/:|][^/|]+:\\|^/google/")
+(setq! auto-revert-avoid-polling t)
+#+END_SRC
+
+* DIRED
 #+BEGIN_SRC elisp :results silent
 (use-package! dired
   :init
@@ -942,7 +1120,8 @@ Specific export directories for different projects
     (setq! dired-use-ls-dired nil))
   :config
   (map! :map dired-mode-map :desc "Easy key for directory-up" :n "h" #'dired-up-directory)
-  (map! :map dired-mode-map :desc "Easy key for directory-down/open" :n "l" #'dired-find-file))
+  (map! :map dired-mode-map :desc "Easy key for directory-down/open" :n "l" #'dired-find-file)
+  (map! :map dired-mode-map :desc "dired-do-kill-lines" :n "K" #'dired-do-kill-lines))
 #+END_SRC
 * LEETCODE
 #+BEGIN_SRC elisp :results silent
@@ -977,6 +1156,7 @@ Specific export directories for different projects
   ;; (setq! org-roam-database-connector 'sqlite3)
   (use-package! org-roam
     :after org-agenda
+    :defer t
     :config
     (setq! org-roam-completion-everywhere nil)
     (message "org-roam loaded")
@@ -1044,35 +1224,37 @@ Enable kill previous word with Meta-Backspace
 (setq! eshell-history-size 10000)
 
 ;; Aliases
+;; For some reason, these don't work.
+;; Write the ones in the .doom.d/eshell/aliases file
 (set-eshell-alias!
- "up" "eshell-up")
+ "mdp" "mdproxy_tools --connect")
 #+END_SRC
 * EAT
 Yet another terminal emulator for Emacs
 #+BEGIN_SRC elisp :results silent
-(use-package! eat
-  :config
-  (setq! eat-kill-buffer-on-exit t)
-  (setq! eat-term-name "xterm-256color"))
+;; (use-package! eat
+;;   :config
+;;   (setq! eat-kill-buffer-on-exit t)
+;;   (setq! eat-term-name "xterm-256color"))
 
 #+END_SRC
 
 Update the key bindings for eat.
 #+BEGIN_SRC elisp :results silent
-(map! :after eat
-      :leader
-      :desc "Open eat" :ni "ot" #'eat)
+;; (map! :after eat
+;;       :leader
+;;       :desc "Open eat" :ni "ot" #'eat)
 
-(map! :after eat
-      :map eat-mode-map
-      :ni "M-<backspace>" #'eat-self-input
-      :ni "C-r"         #'eat-self-input
-      :ni "S-v"         #'eat-self-input
-      :ni "s-1"        #'+workspace/switch-to-0
-      :ni "s-2"        #'+workspace/switch-to-1
-      :ni "s-3"        #'+workspace/switch-to-2
-      :ni "s-4"        #'+workspace/switch-to-3
-      )
+;; (map! :after eat
+;;       :map eat-mode-map
+;;       :ni "M-<backspace>" #'eat-self-input
+;;       :ni "C-r"         #'eat-self-input
+;;       :ni "S-v"         #'eat-self-input
+;;       :ni "s-1"        #'+workspace/switch-to-0
+;;       :ni "s-2"        #'+workspace/switch-to-1
+;;       :ni "s-3"        #'+workspace/switch-to-2
+;;       :ni "s-4"        #'+workspace/switch-to-3
+;;       )
 #+END_SRC
 
 * COMPANY
@@ -1481,6 +1663,19 @@ Don't let ediff open a new frame
       link))
    local-to-cs-map
    link))
+
+(defun swapnilsm/convert-local-to-cs-i (link)
+  "Convert local file paths to CS links"
+  (interactive)
+  (message link)
+  (seq-reduce
+   (lambda (link regexp-replacement-pair)
+     (replace-regexp-in-string
+      (car regexp-replacement-pair)
+      (cdr regexp-replacement-pair)
+      link))
+   local-to-cs-map
+   link))
 #+END_SRC
 
 ** HOOKS
@@ -1534,6 +1729,8 @@ Don't let ediff open a new frame
      :desc "add imports from prompt" :n  "I" #'google-imports-add-import-from-prompt
      :desc "import usingjava-imports" :n  "i" #'java-imports-add-import-dwim
      :desc "lint"                    :nv "l" #'google-lint
+     :desc "open engdoc"             :n "o" #'google-engdoc-current-file
+     :desc "update freshdoc"         :n "u" #'google-engdoc-update-fresh
      :desc "list issues"             :n  "X" #'flymake-show-buffer-diagnostics
      :desc "fixits"                  :n  "x" #'eglot-code-actions
      ;; :desc "comment-or-un lines"     :nv "l" #'comment-or-uncomment-region
@@ -1542,9 +1739,6 @@ Don't let ediff open a new frame
      :desc "Flymake prev error"      :n  "N" #'flymake-goto-prev-error
      :desc "Expand region"           :nv "," #'er/expand-region
      :desc "Expand region"           :nv "<" #'er/contract-region)
-   (:prefix ("d" . "docs")
-     :desc "open engdoc"             :n "o" #'google-engdoc-current-file
-     :desc "update freshdoc"         :n "u" #'google-engdoc-update-fresh)
    (:prefix "f"
      ;; :desc "code search"             :n "s" #'csearch
      :desc "ivyCS"                   :n "i" #'ivy-cs
@@ -1643,20 +1837,39 @@ Don't let ediff open a new frame
        :desc "Insert time elapsed(Timer)" :nvi "t"  #'org-timer))
 #+END_SRC
 
+** PLAYBOOK
+Epoch converter
+#+BEGIN_SRC elisp :results silent
+(defun swapnilsm/epoch-to-datetime ()
+  "Prompt the user for an epoch time and format it as DD Month YYYY HH:SS."
+  (interactive)
+  (let* ((epoch-time (read-string "Enter the epoch time in millis: "))
+         (formatted-time (format-time-string "%d %b %Y %H:%M:%S" (seconds-to-time (/ (string-to-number epoch-time) 1000)))))
+    (message "%s" formatted-time)))
+
+(defun swapnilsm/current-time-to-epoch ()
+  "Get the current time in milliseconds since the epoch."
+  (interactive)
+  (let* ((current-time (current-time))
+         (seconds (float-time current-time))
+         (milliseconds (* 1000 seconds)))
+    (message "%s" (floor milliseconds))))
+#+END_SRC
+
 * Pocket Reader
 #+BEGIN_SRC elisp :results silent
-(use-package! pocket-reader
-  :config
-  (map! :map pocket-reader-mode-map
-        "/" #'pocket-reader-search
-        "RET" #'pocket-reader-open-in-external-browser
-        "s-RET" #'pocket-reader-open-url
-        "d" #'pocket-reader-delete
-        "g" #'pocket-reader-refresh
-        "G" #'pocket-reader             ; Return to default view
-        "j" #'next-line
-        "k" #'previous-line
-        "y" #'pocket-reader-copy-url))
+;; (use-package! pocket-reader
+;;   :config
+;;   (map! :map pocket-reader-mode-map
+;;         "/" #'pocket-reader-search
+;;         "RET" #'pocket-reader-open-in-external-browser
+;;         "s-RET" #'pocket-reader-open-url
+;;         "d" #'pocket-reader-delete
+;;         "g" #'pocket-reader-refresh
+;;         "G" #'pocket-reader             ; Return to default view
+;;         "j" #'next-line
+;;         "k" #'previous-line
+;;         "y" #'pocket-reader-copy-url))
 #+END_SRC
 
 * Atomic Chrome / Ghost Text
@@ -1700,16 +1913,21 @@ Jump to location using hints
 #+end_src
 
 * Evil overrides
-Override the evil keybindings
+Override the evil keybindings to
+- Enable avy goto in org-agenda
+- Enable avy goto in org
+- Enable evil in minibuffer
+
 #+BEGIN_SRC elisp :results silent
 (map! :map evil-org-agenda-mode-map
       :nmv "s" #'evil-avy-goto-word-or-subword-1)
 
 (map!
      :nvm "s" #'evil-avy-goto-word-or-subword-1)
-#+END_SRC
 
-#+RESULTS:
+(after! evil-collection
+  (setq! evil-want-minibuffer t))
+#+END_SRC
 
 * Subword mode
 Enable subword mode
@@ -1721,7 +1939,7 @@ Enable subword mode
 #+BEGIN_SRC elisp :results silent
 (use-package! embark
   :config
-   (map! :g "C-." #'embark-act))
+   (map! :gniv "C-." #'embark-act))
 #+END_SRC
 
 * Avy Embark
@@ -1744,25 +1962,49 @@ Enable Avy and Embark integration
 (use-package! gptel
   :after org
   :hook
-  ('gptel-post-stream-hook . 'gptel-auto-scroll)
-  ('gptel-post-response-hook . 'gptel-end-of-response)
-  :config
-  (setq! gptel-default-mode #'org-mode)
-  (set-popup-rule! "^\\*ChatGPT\\*$"  :side 'bottom :size 0.3 :select t :modeline nil)
+  (gptel-post-stream . gptel-auto-scroll)
+  (gptel-post-response . gptel-end-of-response)
+  :init
   (map! :map gptel-mode-map
         :mni "s-<return>" #'gptel-send
         :mni "s-RET"    #'gptel-send)
   (map! :leader
-        (:prefix "o"
-         :desc "Open GPTel" :vni "c" #'gptel
-         :desc "Open GPTel menu" :vni "C" #'gptel-menu)))
+        (:prefix "l"
+         :desc "Open GPTel" :ni "c" #'gptel
+         :desc "Open GPTel menu" :ni "m" #'gptel-menu))
+  :config
+  (setq! gptel-default-mode #'org-mode)
+  ;; Change the send key to <return> as RET has some issues with my doom config
+  ;; (transient-suffix-put 'gptel-menu (kbd "RET") :key "<return>")
+  (set-popup-rule! "^\\*ChatGPT\\*$"  :side 'bottom :size 0.3 :select t :modeline nil))
 #+END_SRC
 
+Extra methods based on gptel
 #+BEGIN_SRC elisp :results silent
-(use-package! gptel-extensions
-  :after gptel)
+(after! gptel
+  (defvar gptel-ask--history nil)
+  (defun gptel-ask (prompt)
+    (interactive (list (read-string "Ask ChatGPT: " nil gptel-ask--history)))
+    (when (string= prompt "") (user-error "A prompt is required."))
+    (gptel-request
+        prompt
+      :callback
+      (lambda (response info)
+        (if (not response)
+            (message "gptel-ask failed with message: %s" (plist-get info :status))
+          (with-current-buffer (get-buffer-create "*gptel-ask*")
+            (let ((inhibit-read-only t))
+              (erase-buffer)
+              (insert response))
+            (special-mode)
+            (display-buffer (current-buffer)
+                            `((display-buffer-in-side-window)
+                              (side . bottom)
+                              (window-height . ,#'fit-window-to-buffer))))))))
+  (map! :leader
+        (:prefix ("l" . "llm")
+                 :desc "Quick ask" :ni "q" #'gptel-ask)))
 #+END_SRC
-
 
 * Authinfo
 #+BEGIN_SRC elisp :results silent
@@ -1775,16 +2017,24 @@ Enable Avy and Embark integration
 #+BEGIN_SRC elisp :results silent
 (use-package! gcmh
   :config
-  (setq! gcmh-high-cons-threshold 1073741824)
+  (setq! gcmh-high-cons-threshold 107374182)
   (gcmh-mode 1))
 #+END_SRC
 
 * Calendar
-#+begin_src elisp
+Update the schedule asynchronously
+#+begin_src elisp :results silent
 (defun swapnilsm/sync-calendar ()
   (interactive)
-  (shell-command "cd ~/Projects/python-samples/calendar/quickstart && ~/Projects/python-samples/calendar/quickstart/calendar/bin/python3 ~/Projects/python-samples/calendar/quickstart/q.py"))
+  (let* ((command "cd ~/Projects/python-samples/calendar/quickstart && ~/Projects/python-samples/calendar/quickstart/calendar/bin/python3 ~/Projects/python-samples/calendar/quickstart/q.py")
+        (process (start-process-shell-command "sync-calendar" nil command)))
+    (message "Syncing calendar...")
+    (set-process-sentinel process (lambda (_ _) (message "Syncing calendar... Done.")))))
 #+end_src
+
+#+BEGIN_SRC elisp :results silent
+(run-at-time (current-time) (* 60 30) #'swapnilsm/sync-calendar)
+#+END_SRC
 
 * Hyperbole
 #+BEGIN_SRC elisp :results silent
@@ -1800,7 +2050,9 @@ Enable Avy and Embark integration
 
 * Org web tools
 #+BEGIN_SRC elisp :results silent
-(use-package! org-web-tools)
+(use-package! org-web-tools
+  :config
+  (setq! org-web-tools-pandoc-sleep-time 2))
 #+END_SRC
 
 * Org edna
@@ -1819,4 +2071,98 @@ Enable Avy and Embark integration
 * memory usage
 #+BEGIN_SRC elisp :results silent
 (use-package! memory-usage)
+#+END_SRC
+
+* Spell checker
+#+BEGIN_SRC elisp :results silent
+;; Fix problems with aspell and the --run-together option
+(after! ispell
+  (setq ispell-program-name "aspell"
+        ;; Notice the lack of "--run-together"
+        ispell-extra-args '("--sug-mode=ultra" "--ignore=4"))
+  (ispell-kill-ispell t)
+  (map! :prefix "z"
+        :desc "flyspell-correct-at-point" :n "s" #'flyspell-correct-at-point))
+#+END_SRC
+
+* AVY
+Consider all the windows for avy
+#+BEGIN_SRC elisp :results silent
+(after! avy
+  :config
+  (setq! avy-all-windows t))
+#+END_SRC
+
+* DEVICE TREE
+Install device tree mode for zmk configurations
+#+BEGIN_SRC elisp :results silent
+(use-package! dts-mode
+  :defer t
+  :mode "\\.keymap$")
+#+END_SRC
+
+* FONTAINE
+#+BEGIN_SRC elisp :results silent
+;; (use-package! fontaine
+;;   :config
+;;   (setq! fontaine-latest-state-file
+;;          (locate-user-emacs-file "fontaine-latest-state.eld"))
+;;   (setq! fontaine-presets
+;;         '(
+;;           (regular
+;;            :default-height 170)
+;;           (medium
+;;            :default-height 190
+;;            :fixed-pitch-height 190
+;;            :variable-pitch-height 200)
+;;           (large
+;;            :default-height 210
+;;            :fixed-pitch-height 210
+;;            :variable-pitch-height 230)
+;;           (presentation
+;;            :default-weight medium
+;;            :default-height 250
+;;            :bold-weight bold)
+;;           (t
+;;            :default-family "JetBrains Mono"
+;;            :default-weight light
+;;            :default-height 170
+;;            ;; :fixed-pitch-family nil ; falls back to :default-family
+;;            ;; :fixed-pitch-weight nil ; falls back to :default-weight
+;;            :fixed-pitch-height 0.95
+;;            ;; :fixed-pitch-serif-family nil ; falls back to :default-family
+;;            ;; :fixed-pitch-serif-weight nil ; falls back to :default-weight
+;;            :fixed-pitch-serif-height 0.95
+;;            :variable-pitch-family "JetBrains Mono"
+;;            :variable-pitch-weight thin
+;;            :variable-pitch-height 1.1
+;;            :bold-family nil ; use whatever the underlying face has
+;;            :bold-weight bold
+;;            :italic-family nil
+;;            :italic-slant italic
+;;            :line-spacing nil)))
+;;   ;; Recover last preset or fall back to desired style from
+;;   ;; `fontaine-presets'.
+;;   (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
+
+;;   ;; The other side of `fontaine-restore-latest-preset'.
+;;   (add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+
+;;   ;; fontaine does not define any key bindings.  This is just a sample that
+;;   ;; respects the key binding conventions.  Evaluate:
+;;   ;;
+;;   ;;     (info "(elisp) Key Binding Conventions")
+;;   ;; (define-key global-map (kbd "C-c f") #'fontaine-set-preset)
+;;   ;; (define-key global-map (kbd "C-c F") #'fontaine-set-face-font)
+;;   )
+#+END_SRC
+
+* Auto Treesitter
+#+BEGIN_SRC elisp :results silent
+(use-package! treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 #+END_SRC

@@ -55,28 +55,19 @@
 (package! beacon)
 (package! dimmer)
 ;; (package! org-fancy-priorities)
-;; (package! org
+;;(package! org
 ;;   ;; :pin "d6f3aed7b1b01df7b092a47099205847b34fdd37"
 ;;   ;; :pin "806abc5a2"
 ;;   ;; :pin "ca873f7"
 ;;   ;; :pin "6d85f851b3cf47abaf5197fe07bd793b5cf0d5dc"
 ;;   ;; :pin "cdd73bc"
-;;   :built-in nil)
+;;   :built-in t)
 (package! org-super-agenda)
 (package! org-agenda-property)
-;; (package! emacs-aio :recipe
-;;   (:host github :repo "skeeto/emacs-aio"))
-;; (package! emacs-request :recipe
-;;   (:host github :repo "tkf/emacs-request"))
-;; (package! alert :recipe
-;;   (:host github :repo "jwiegley/alert"))
-;; (package! emacs-oauth2-auto :recipe
-;;   (:host github :repo "rhaps0dy/emacs-oauth2-auto"))
-;; (package! persist)
-(package! org-gcal :recipe
-  (:host github :repo "kidd/org-gcal.el"))
-(package! org-caldav :recipe
-  (:host github :repo "dengste/org-caldav"))
+;; (package! org-gcal :recipe
+;;   (:host github :repo "kidd/org-gcal.el"))
+;; (package! org-caldav :recipe
+;;   (:host github :repo "dengste/org-caldav"))
 (package! leetcode
   :recipe (:repo "swapnilsm/leetcode.el"))
 (package! doct)
@@ -95,7 +86,7 @@
   :recipe (:repo "tkf/emacs-request"))
 (package! org-present)
 (package! visual-fill-column)
-(package! mixed-pitch)
+;; (package! mixed-pitch)
 
 ;; Google
 (package! google :built-in 'prefer)
@@ -176,12 +167,12 @@
 ;; (package! company-box)
 ;; (package! sql-dremel :built-in 'prefer)
 
-(package! eat :recipe (:host codeberg :repo "akib/emacs-eat" :files ("*.el" ("term" "term/*.el") "*.texi"
-    "*.ti" ("terminfo/e" "terminfo/e/*")
-    ("terminfo/65" "terminfo/65/*")
-    ("integration" "integration/*")
-    (:exclude ".dir-locals.el" "*-tests.el"))))
-(package! pocket-reader)
+;; (package! eat :recipe (:host codeberg :repo "akib/emacs-eat" :files ("*.el" ("term" "term/*.el") "*.texi"
+;;     "*.ti" ("terminfo/e" "terminfo/e/*")
+;;     ("terminfo/65" "terminfo/65/*")
+;;     ("integration" "integration/*")
+;;     (:exclude ".dir-locals.el" "*-tests.el"))))
+;; (package! pocket-reader)
 (package! atomic-chrome)
 (package! writeroom-mode)
 (package! org-roam-ui)
@@ -192,11 +183,11 @@
 (package! evil-snipe :disable t)
 (package! avy-embark-collect)
 (package! gptel)
-(package! gptel-extensions
-  :recipe (:host github :repo "kamushadenes/gptel-extensions.el"))
+;; (package! gptel-extensions
+;;   :recipe (:host github :repo "kamushadenes/gptel-extensions.el"))
 (package! gcmh
   :recipe (:host github :repo "emacsmirror/gcmh"))
-(package! hyperbole)
+;; (package! hyperbole)
 (package! org-web-tools)
 (package! org-edna)
 (package! origami)
@@ -204,3 +195,8 @@
   :recipe (:host github
            :repo "kmonad/kbd-mode"))
 (package! memory-usage)
+(package! dts-mode)
+(package! fontaine
+  :recipe (:host github :repo "protesilaos/fontaine"))
+(package! treesit-auto
+  :recipe (:host github :repo "renzmann/treesit-auto"))
