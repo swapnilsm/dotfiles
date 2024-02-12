@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: Issues Columnview
+# uuid:
+# key: issues
+# condition: t
+# --
+
+#+BEGIN: columnview :id local :skip-empty-rows t :format "%buganizer_id(ID) %buganizer_status(Status) %buganizer_assignee(Assignee) %buganizer_title(Issue Title)"
+#+END:
