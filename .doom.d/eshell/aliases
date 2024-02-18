@@ -11,3 +11,4 @@ alias gg magit-status
 alias cdp cd-to-project
 alias clear clear-scrollback
 alias mdp mdproxy_tools --connect
+alias bs bugged server --linger 10h &

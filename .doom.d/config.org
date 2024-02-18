@@ -43,6 +43,7 @@
   - [[#superstar][SUPERSTAR]]
   - [[#export][EXPORT]]
   - [[#column-view][COLUMN VIEW]]
+  - [[#standup-updates][STANDUP UPDATES]]
 - [[#expand-region][EXPAND REGION]]
 - [[#beacon][BEACON]]
 - [[#dimmer][DIMMER]]
@@ -169,7 +170,7 @@ font string. You generally only need these two:
 (setq! ns-use-thin-smoothing t)
 (setq! ns-antialias-text t)
 ;; (setq! doom-font (font-spec :family "Iosevka Term" :size 17 :weight 'light))
-;; (setq! doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 19 :weight 'light))
+(setq! doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 19 :weight 'light))
 ;; (setq! doom-big-font (font-spec :family "Iosevka Aile" :size 24 :weight 'light))
 ;; (setq! doom-font (font-spec :family "Fira Code" :size 15 :weight 'light))
 ;; (setq! doom-variable-pitch-font (font-spec :family "Fira Code" :size 15 :weight 'light))
@@ -180,7 +181,7 @@ font string. You generally only need these two:
 ;; (setq! doom-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
 ;; (setq! doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 15 :weight 'regular))
 (setq! doom-font (font-spec :family "JetBrains Mono" :size 17 :weight 'light))
-(setq! doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 19 :weight 'thin))
+;; (setq! doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 19 :weight 'thin))
 (setq! doom-big-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light))
 ;; (setq! doom-variable-pitch-font (font-spec :family "Google Sans" :weight 'regular))
 #+END_SRC
@@ -229,10 +230,13 @@ Set normal weights for org levels
 (defun sm/disable-org-heading-weights ()
   (set-face-attribute 'org-level-1 nil :weight 'normal)
   (set-face-attribute 'org-level-2 nil :weight 'normal)
-  (set-face-attribute 'org-level-3 nil :weight 'normal))
+  (set-face-attribute 'org-level-2 nil :weight 'normal)
+  (set-face-attribute 'org-level-3 nil :weight 'normal)
+  (set-face-attribute 'org-level-4 nil :weight 'normal)
+  (set-face-attribute 'org-link nil :weight 'normal))
 ;; Because of some reason the following hook doesn't work. Hence after! org.
 ;; (add-hook! 'doom-after-modules-config-hook #'sm/disable-org-heading-weights)
-(after! org
+(after! evil-org
   (sm/disable-org-heading-weights))
 #+END_SRC
 
@@ -715,60 +719,6 @@ Custom function to optionally create task for the last captured resource
 
 #+END_SRC
 
-
-***** My agenda
-#+BEGIN_SRC elisp :results silent
-(setq! org-agenda-clockreport-parameter-plist '(:narrow 200 :maxlevel 5 :fileskip0 t :link nil :indent t :tcolumns 2))
-(after! org-agenda
-  (add-to-list 'org-agenda-custom-commands
-               '("p"  "My agenda"
-                 ((agenda "" (
-                              (org-agenda-skip-function 'sm-agenda-skip-function)
-                              (org-agenda-span 'day)
-                              (org-super-agenda-groups
-                               '(
-                                 (:name "Log"
-                                  :log t
-                                  :order 6)
-                                 (:name "Today"
-                                  :time-grid t
-                                  :date today
-                                  :todo "TODAY"
-                                  :scheduled today
-                                  :order 7)
-                                 (:name "Overdue - Started"
-                                  :and (:deadline past
-                                        :todo "STRT")
-                                  :order 1)
-                                 (:name "Waiting"
-                                  :and (:todo "WAIT")
-                                  :order 5)
-                                 (:name "Overdue - Not started"
-                                  :and (:deadline past
-                                        :not (:todo "STRT"))
-                                  :order 2)
-                                 (:name "Scheduled"
-                                  :and (:scheduled past
-                                        :deadline future)
-                                  :order 3)
-                                 (:name "Due Today"
-                                  :deadline today
-                                  :order 4)
-                                 (:name "Due Soon"
-                                  :deadline future
-                                  :order 8)
-                                 (:discard (:anything t))
-                                 ))))))))
-                  ;; (todo "" ((org-agenda-overriding-header "")
-                  ;;           (org-super-agenda-groups '(
-                  ;;                                      (:name "Unplanned"
-                  ;;                                       :deadline nil
-                  ;;                                       :discard (:anything t))))))
-
-
-#+END_SRC
-
-
 ** SUPER AGENDA
 #+BEGIN_SRC elisp :results silent
 (use-package! org-super-agenda
@@ -1079,6 +1029,13 @@ Shorten issue title in column view
         :mode org-mode
         :prefix ("d" . "dynamic-block")
         :desc "Update dynamic block"  :ni "u" #'org-dblock-update))
+#+END_SRC
+
+** STANDUP UPDATES
+#+BEGIN_SRC elisp :results silent
+(after! evil-org-agenda
+  :config
+  (set-popup-rule! "^\\*Org QL View: Clock Report for Yesterday\\*$"  :side 'bottom :size 0.3 :select t :modeline nil))
 #+END_SRC
 
 * EXPAND REGION
@@ -1974,6 +1931,10 @@ Enable Avy and Embark integration
          :desc "Open GPTel menu" :ni "m" #'gptel-menu))
   :config
   (setq! gptel-default-mode #'org-mode)
+  ;; Enable gemini backend
+  (gptel-make-gemini "Gemini"
+    :key (lambda () (gptel-api-key-from-auth-source "gemini.google.com" "apikey"))
+    :stream t)
   ;; Change the send key to <return> as RET has some issues with my doom config
   ;; (transient-suffix-put 'gptel-menu (kbd "RET") :key "<return>")
   (set-popup-rule! "^\\*ChatGPT\\*$"  :side 'bottom :size 0.3 :select t :modeline nil))
@@ -2028,8 +1989,8 @@ Update the schedule asynchronously
   (interactive)
   (let* ((command "cd ~/Projects/python-samples/calendar/quickstart && ~/Projects/python-samples/calendar/quickstart/calendar/bin/python3 ~/Projects/python-samples/calendar/quickstart/q.py")
         (process (start-process-shell-command "sync-calendar" nil command)))
-    (message "Syncing calendar...")
-    (set-process-sentinel process (lambda (_ _) (message "Syncing calendar... Done.")))))
+    (message "[%s] Syncing calendar..." (format-time-string "%H:%M"))
+    (set-process-sentinel process (lambda (_ _) (message "[%s] Syncing calendar... Done." (format-time-string "%H:%M"))))))
 #+end_src
 
 #+BEGIN_SRC elisp :results silent
@@ -2112,13 +2073,9 @@ Install device tree mode for zmk configurations
 ;;           (regular
 ;;            :default-height 170)
 ;;           (medium
-;;            :default-height 190
-;;            :fixed-pitch-height 190
-;;            :variable-pitch-height 200)
+;;            :default-height 190)
 ;;           (large
-;;            :default-height 210
-;;            :fixed-pitch-height 210
-;;            :variable-pitch-height 230)
+;;            :default-height 210)
 ;;           (presentation
 ;;            :default-weight medium
 ;;            :default-height 250
@@ -2129,12 +2086,12 @@ Install device tree mode for zmk configurations
 ;;            :default-height 170
 ;;            ;; :fixed-pitch-family nil ; falls back to :default-family
 ;;            ;; :fixed-pitch-weight nil ; falls back to :default-weight
-;;            :fixed-pitch-height 0.95
+;;            :fixed-pitch-height 1.0
 ;;            ;; :fixed-pitch-serif-family nil ; falls back to :default-family
 ;;            ;; :fixed-pitch-serif-weight nil ; falls back to :default-weight
-;;            :fixed-pitch-serif-height 0.95
-;;            :variable-pitch-family "JetBrains Mono"
-;;            :variable-pitch-weight thin
+;;            :fixed-pitch-serif-height 1.0
+;;            :variable-pitch-family "Iosevka Aile"
+;;            :variable-pitch-weight light
 ;;            :variable-pitch-height 1.1
 ;;            :bold-family nil ; use whatever the underlying face has
 ;;            :bold-weight bold
